@@ -1,0 +1,3265 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bibitunggul.id — Marketplace Bibit Tanaman Berkualitas Unggul</title>
+  
+  <!-- Tailwind CSS & Inter Font -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#F0FDF4',
+              100: '#DCFCE7',
+              500: '#22C55E',
+              600: '#16A34A',
+              700: '#15803D',
+              800: '#166534',
+              900: '#14532D',
+            },
+            accent: {
+              400: '#A3E635',
+              500: '#84CC16',
+              600: '#65A30D',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom Scrollbar & Animations */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    .fade-in { animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .badge-habis {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-brand-500 selection:text-white min-h-screen flex flex-col pb-16 md:pb-0">
+
+  <!-- ========================================== -->
+  <!-- TOAST NOTIFICATION CONTAINER               -->
+  <!-- ========================================== -->
+  <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none max-w-sm w-full"></div>
+
+  <!-- ========================================== -->
+  <!-- TOP NAVBAR                                 -->
+  <!-- ========================================== -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 transition-all shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 gap-4">
+        
+        <!-- Logo -->
+        <a href="javascript:void(0)" onclick="window.navigateTo('home')" class="flex items-center gap-2.5 group">
+          <div class="w-10 h-10 rounded-xl bg-brand-700 flex items-center justify-center text-white shadow-md shadow-brand-700/20 group-hover:scale-105 transition-transform">
+            <!-- Leaf SVG -->
+            <svg class="w-6 h-6 fill-current text-white" viewBox="0 0 24 24">
+              <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A9.49 9.49 0 0 0 17 8z"/>
+              <path d="M3.27 3a2.31 2.31 0 0 0-1.84 2.87L3 11a13.3 13.3 0 0 0 13-8.83l.26-.9a2.31 2.31 0 0 0-2.87-1.84L3.27 3z"/>
+            </svg>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-xl font-extrabold tracking-tight text-slate-900 flex items-center">
+              Bibit<span class="text-brand-700">unggul</span><span class="text-accent-500">.id</span>
+            </span>
+            <span class="text-[10px] uppercase font-semibold text-slate-400 tracking-wider">Tanaman Unggul & Bergaransi</span>
+          </div>
+        </a>
+
+        <!-- Global Search Bar (Desktop) -->
+        <div class="hidden md:flex flex-1 max-w-md mx-4">
+          <div class="relative w-full">
+            <input type="text" id="global-search-input" onkeyup="window.handleDebouncedSearch(event)" placeholder="Cari bibit buah, alpukat, durian, monstera..." class="w-full bg-slate-100 border border-slate-200 rounded-full pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-brand-600 focus:bg-white transition-all shadow-inner">
+            <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Navigation Links & Action Buttons -->
+        <nav class="flex items-center gap-3">
+          <!-- Public Links -->
+          <button onclick="window.navigateTo('home')" class="nav-link px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 hover:text-brand-700 hover:bg-slate-100 hidden sm:inline-block">Beranda</button>
+          <button onclick="window.navigateTo('katalog')" class="nav-link px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 hover:text-brand-700 hover:bg-slate-100">Katalog</button>
+
+          <!-- Cart Button (Customer) -->
+          <div id="nav-cart-wrapper" class="relative">
+            <button onclick="window.openCartDrawer()" class="relative p-2 text-slate-600 hover:text-brand-700 hover:bg-brand-50 rounded-xl transition-colors" title="Keranjang Belanja">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+              </svg>
+              <span id="cart-badge-count" class="absolute -top-1 -right-1 bg-brand-600 text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center ring-2 ring-white">0</span>
+            </button>
+          </div>
+
+          <!-- Auth Buttons Container -->
+          <div id="nav-auth-container" class="flex items-center gap-2">
+            <!-- Rendered by JS based on appState.isAuth -->
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- MAIN CONTAINER (SPA SECTIONS)              -->
+  <!-- ========================================== -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- ---------------------------------------- -->
+    <!-- VIEW: BERANDA (HOME)                     -->
+    <!-- ---------------------------------------- -->
+    <section id="view-home" class="spa-view fade-in">
+      <!-- Hero Banner -->
+      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand-900 via-brand-800 to-emerald-950 text-white p-8 md:p-14 shadow-2xl mb-10">
+        <div class="relative z-10 max-w-2xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-700/60 border border-brand-500/40 text-accent-400 text-xs font-semibold uppercase tracking-wider mb-4">
+            <span class="w-2 h-2 rounded-full bg-accent-400 animate-pulse"></span> Bibit Unggul Bersertifikat
+          </div>
+          <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight mb-4">
+            Hijaukan Rumah, <br class="hidden sm:inline">Panen Hasil Berkualitas Unggul.
+          </h1>
+          <p class="text-slate-200 text-base sm:text-lg mb-8 leading-relaxed font-light">
+            Menyediakan bibit buah okulasi cepat berbuah, tanaman hias eksotis, dan benih organik pilihan. Garansi bibit aman tiba di tujuan.
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <button onclick="window.navigateTo('katalog')" class="px-6 py-3.5 bg-accent-500 hover:bg-accent-600 text-slate-900 font-bold rounded-xl shadow-lg shadow-accent-500/30 transition-all flex items-center gap-2 group">
+              Belanja Sekarang
+              <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </button>
+            <button onclick="window.scrollToSection('kategori-section')" class="px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl backdrop-blur-md border border-white/20 transition-all">
+              Jelajahi Kategori
+            </button>
+          </div>
+        </div>
+        <!-- Decorative Botanical Illustration / Gradient Blur -->
+        <div class="absolute -right-16 -bottom-24 w-96 h-96 rounded-full bg-brand-500/20 blur-3xl pointer-events-none"></div>
+      </div>
+
+      <!-- Kategori Section -->
+      <div id="kategori-section" class="mb-12">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="text-2xl font-bold text-slate-900">Kategori Bibit Pilihan</h2>
+            <p class="text-sm text-slate-500">Pilih ragam varietas sesuai kebutuhan kebun & lahan Anda</p>
+          </div>
+          <button onclick="window.navigateTo('katalog')" class="text-sm font-semibold text-brand-700 hover:text-brand-800 flex items-center gap-1">
+            Semua Produk <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+        <div id="home-category-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Produk Unggulan Section -->
+      <div class="mb-12">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="text-2xl font-bold text-slate-900">Bibit Paling Diminati (Best Seller)</h2>
+            <p class="text-sm text-slate-500">Bibit adaptif dengan tingkat keberhasilan tanam tertinggi</p>
+          </div>
+          <button onclick="window.navigateTo('katalog')" class="text-sm font-semibold text-brand-700 hover:text-brand-800">
+            Lihat Katalog Lengkap →
+          </button>
+        </div>
+        <div id="home-featured-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Nilai Tambah / Benefit Section -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-emerald-50/60 border border-emerald-100 rounded-3xl p-8 mb-12">
+        <div class="flex items-start gap-4">
+          <div class="w-12 h-12 rounded-2xl bg-brand-700 text-white flex items-center justify-center shrink-0 shadow-md">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          </div>
+          <div>
+            <h4 class="font-bold text-slate-900 mb-1">Garansi Bibit Hidup</h4>
+            <p class="text-xs text-slate-600 leading-relaxed">Bibit mati atau patah saat pengiriman akan diganti baru 100% tanpa biaya tambahan.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4">
+          <div class="w-12 h-12 rounded-2xl bg-brand-700 text-white flex items-center justify-center shrink-0 shadow-md">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <div>
+            <h4 class="font-bold text-slate-900 mb-1">COD & Transfer Bank</h4>
+            <p class="text-xs text-slate-600 leading-relaxed">Fleksibilitas pembayaran manual: transfer rekening resmi atau bayar tunai di tempat (COD).</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4">
+          <div class="w-12 h-12 rounded-2xl bg-brand-700 text-white flex items-center justify-center shrink-0 shadow-md">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+          </div>
+          <div>
+            <h4 class="font-bold text-slate-900 mb-1">Konsultasi Gratis</h4>
+            <p class="text-xs text-slate-600 leading-relaxed">Didampingi tim agronomist ahli perihal perawatan, pemupukan, dan media tanam.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------------------------------------- -->
+    <!-- VIEW: KATALOG PRODUK                     -->
+    <!-- ---------------------------------------- -->
+    <section id="view-katalog" class="spa-view hidden fade-in">
+      <div class="mb-8">
+        <h1 class="text-3xl font-extrabold text-slate-900 mb-2">Katalog Bibit Tanaman</h1>
+        <p class="text-sm text-slate-500">Temukan bibit tanaman asli dengan garansi varietas murni</p>
+      </div>
+
+      <!-- Filter Bar: Search + Category Chips -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs mb-6 flex flex-col md:flex-row gap-4 items-center justify-between">
+        <!-- Search Filter -->
+        <div class="relative w-full md:w-80">
+          <input type="text" id="catalog-search-input" onkeyup="window.handleDebouncedSearch(event)" placeholder="Ketik nama bibit..." class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-brand-600 focus:bg-white transition-all">
+          <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </div>
+
+        <!-- Category Filter Buttons -->
+        <div id="catalog-category-chips" class="flex flex-wrap gap-2 w-full md:w-auto items-center">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Product Grid -->
+      <div id="catalog-product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Populated by JS -->
+      </div>
+      <div id="catalog-empty-state" class="hidden text-center py-16">
+        <svg class="w-16 h-16 text-slate-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <p class="text-slate-500 font-medium">Tidak ada bibit yang cocok dengan pencarian Anda.</p>
+        <button onclick="window.resetCatalogFilter()" class="mt-3 px-4 py-2 text-xs font-semibold text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-lg">Reset Filter</button>
+      </div>
+    </section>
+
+    <!-- ---------------------------------------- -->
+    <!-- VIEW: LOGIN                              -->
+    <!-- ---------------------------------------- -->
+    <section id="view-login" class="spa-view hidden fade-in py-10">
+      <div class="max-w-md mx-auto bg-white border border-slate-200 rounded-3xl p-8 shadow-xl">
+        <div class="text-center mb-8">
+          <div class="w-12 h-12 rounded-2xl bg-brand-700 text-white flex items-center justify-center mx-auto mb-3 shadow-md">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
+          </div>
+          <h2 class="text-2xl font-bold text-slate-900">Masuk ke Akun Anda</h2>
+          <p class="text-sm text-slate-500 mt-1">Gunakan akun Anda untuk berbelanja dan memantau pesanan</p>
+        </div>
+
+        <form id="form-login" onsubmit="window.handleLogin(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5">Username</label>
+            <input type="text" id="login-username" required placeholder="Contoh: pelanggan / admin" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-600 focus:bg-white transition-all">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5">Password</label>
+            <input type="password" id="login-password" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-600 focus:bg-white transition-all">
+          </div>
+          
+          <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-800">
+            <p class="font-bold mb-1">Akun Coba Demo:</p>
+            <div class="flex justify-between">
+              <span>Admin: <b>admin</b> / <b>das12345</b></span>
+              <span>Pelanggan: <b>pelanggan</b> / <b>das12345</b></span>
+            </div>
+          </div>
+
+          <button type="submit" id="btn-login-submit" class="w-full py-3 bg-brand-700 hover:bg-brand-800 text-white font-bold rounded-xl shadow-md shadow-brand-700/20 transition-all flex items-center justify-center gap-2">
+            <span>Masuk Sekarang</span>
+          </button>
+        </form>
+
+        <div class="mt-6 text-center text-xs text-slate-500">
+          Belum punya akun? <a href="javascript:void(0)" onclick="window.navigateTo('register')" class="font-bold text-brand-700 hover:underline">Daftar Akun Baru</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------------------------------------- -->
+    <!-- VIEW: DAFTAR (REGISTER)                  -->
+    <!-- ---------------------------------------- -->
+    <section id="view-register" class="spa-view hidden fade-in py-10">
+      <div class="max-w-md mx-auto bg-white border border-slate-200 rounded-3xl p-8 shadow-xl">
+        <div class="text-center mb-8">
+          <div class="w-12 h-12 rounded-2xl bg-brand-700 text-white flex items-center justify-center mx-auto mb-3 shadow-md">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+          </div>
+          <h2 class="text-2xl font-bold text-slate-900">Registrasi Pelanggan Baru</h2>
+          <p class="text-sm text-slate-500 mt-1">Daftarkan akun untuk mulai memesan bibit berkualitas</p>
+        </div>
+
+        <form id="form-register" onsubmit="window.handleRegister(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nama Lengkap</label>
+            <input type="text" id="reg-nama" required placeholder="Nama lengkap Anda" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-600 focus:bg-white">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Username</label>
+            <input type="text" id="reg-username" required placeholder="Username unik (tanpa spasi)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-600 focus:bg-white">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Email</label>
+            <input type="email" id="reg-email" required placeholder="alamat@email.com" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-600 focus:bg-white">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nomor WhatsApp / HP</label>
+            <input type="tel" id="reg-nohp" required placeholder="08xxxxxxxxxx" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-600 focus:bg-white">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Password</label>
+            <input type="password" id="reg-password" required placeholder="Minimal 6 karakter" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-600 focus:bg-white">
+          </div>
+
+          <button type="submit" id="btn-register-submit" class="w-full py-3 bg-brand-700 hover:bg-brand-800 text-white font-bold rounded-xl shadow-md shadow-brand-700/20 transition-all flex items-center justify-center gap-2">
+            <span>Daftar Sekarang</span>
+          </button>
+        </form>
+
+        <div class="mt-6 text-center text-xs text-slate-500">
+          Sudah memiliki akun? <a href="javascript:void(0)" onclick="window.navigateTo('login')" class="font-bold text-brand-700 hover:underline">Masuk di sini</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------------------------------------- -->
+    <!-- VIEW: PESANAN SAYA (CUSTOMER)            -->
+    <!-- ---------------------------------------- -->
+    <section id="view-my-orders" class="spa-view hidden fade-in">
+      <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 class="text-3xl font-extrabold text-slate-900">Pesanan Saya</h1>
+          <p class="text-sm text-slate-500">Lacak riwayat transaksi dan status pengiriman pesanan Anda</p>
+        </div>
+        <button onclick="window.navigateTo('katalog')" class="px-4 py-2 text-xs font-bold bg-brand-50 text-brand-700 rounded-xl hover:bg-brand-100 flex items-center gap-1.5 w-fit">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg> Belanja Bibit Lagi
+        </button>
+      </div>
+
+      <div id="my-orders-list" class="space-y-4">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- ---------------------------------------- -->
+    <!-- VIEW: ALAMAT SAYA (CUSTOMER)             -->
+    <!-- ---------------------------------------- -->
+    <section id="view-my-addresses" class="spa-view hidden fade-in">
+      <div class="mb-6 flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-extrabold text-slate-900">Buku Alamat</h1>
+          <p class="text-sm text-slate-500">Kelola alamat tujuan pengiriman bibit pesanan Anda</p>
+        </div>
+        <button onclick="window.openAddressModal()" class="px-4 py-2.5 bg-brand-700 hover:bg-brand-800 text-white text-xs font-bold rounded-xl shadow-md flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg> Tambah Alamat
+        </button>
+      </div>
+
+      <div id="my-addresses-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- ---------------------------------------- -->
+    <!-- VIEW: PROFIL SAYA (CUSTOMER)             -->
+    <!-- ---------------------------------------- -->
+    <section id="view-my-profile" class="spa-view hidden fade-in max-w-2xl mx-auto">
+      <div class="bg-white border border-slate-200 rounded-3xl p-8 shadow-xs">
+        <h2 class="text-2xl font-bold text-slate-900 mb-6">Profil Pengguna</h2>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Nama Lengkap</label>
+            <input type="text" id="prof-nama" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm" readonly>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Username</label>
+            <input type="text" id="prof-username" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm" readonly>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Email</label>
+            <input type="email" id="prof-email" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm" readonly>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Nomor WhatsApp / HP</label>
+            <input type="text" id="prof-nohp" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm" readonly>
+          </div>
+          <div class="pt-4 border-t border-slate-100 flex justify-end">
+            <button onclick="window.handleLogout()" class="px-5 py-2.5 bg-rose-50 text-rose-700 hover:bg-rose-100 font-bold text-xs rounded-xl transition-all">
+              Keluar dari Akun (Logout)
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------------------------------------- -->
+    <!-- VIEW: ADMIN DASHBOARD & MANAGEMENT       -->
+    <!-- ---------------------------------------- -->
+    <section id="view-admin" class="spa-view hidden fade-in">
+      <!-- Admin Sub-Navigation Bar -->
+      <div class="flex items-center justify-between border-b border-slate-200 pb-4 mb-6">
+        <div>
+          <span class="text-xs uppercase font-extrabold text-brand-700 tracking-wider">Portal Manajemen</span>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900" id="admin-page-title">Dashboard Admin</h1>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="window.switchAdminTab('dashboard')" class="admin-tab-btn active px-3 py-1.5 rounded-xl text-xs font-bold bg-brand-700 text-white" data-tab="dashboard">Dashboard</button>
+          <button onclick="window.switchAdminTab('produk')" class="admin-tab-btn px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100" data-tab="produk">Produk</button>
+          <button onclick="window.switchAdminTab('kategori')" class="admin-tab-btn px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100" data-tab="kategori">Kategori</button>
+          <button onclick="window.switchAdminTab('pesanan')" class="admin-tab-btn px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100" data-tab="pesanan">Pesanan</button>
+          <button onclick="window.switchAdminTab('pengguna')" class="admin-tab-btn px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100" data-tab="pengguna">Pengguna</button>
+          <button onclick="window.switchAdminTab('laporan')" class="admin-tab-btn px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100" data-tab="laporan">Laporan</button>
+        </div>
+      </div>
+
+      <!-- TAB 1: DASHBOARD OVERVIEW -->
+      <div id="admin-tab-dashboard" class="admin-subtab space-y-6">
+        <!-- Stat Metric Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+            <span class="text-xs font-semibold text-slate-500 uppercase">Total Omset Selesai</span>
+            <h3 class="text-2xl font-extrabold text-slate-900 mt-1" id="stat-total-sales">Rp 0</h3>
+            <span class="text-[11px] text-emerald-600 font-bold">Pesanan Lunas & Selesai</span>
+          </div>
+          <div onclick="window.switchAdminTab('pesanan'); document.getElementById('admin-order-filter-status').value='Menunggu Pembayaran'; window.renderAdminOrders();" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs cursor-pointer hover:border-amber-500 hover:shadow-md transition-all group" title="Klik untuk meninjau pesanan menunggu">
+            <span class="text-xs font-semibold text-slate-500 uppercase flex items-center justify-between">
+              Pesanan Menunggu
+              <span class="text-[10px] text-amber-600 font-bold group-hover:underline">Periksa →</span>
+            </span>
+            <h3 class="text-2xl font-extrabold text-amber-600 mt-1" id="stat-pending-orders">0</h3>
+            <span class="text-[11px] text-slate-500">Perlu Konfirmasi Pembayaran</span>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+            <span class="text-xs font-semibold text-slate-500 uppercase">Stok Menipis (<= 5)</span>
+            <h3 class="text-2xl font-extrabold text-rose-600 mt-1" id="stat-low-stock">0</h3>
+            <span class="text-[11px] text-slate-500">Perlu Restock Bibit Segera</span>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+            <span class="text-xs font-semibold text-slate-500 uppercase">Total Bibit Aktif</span>
+            <h3 class="text-2xl font-extrabold text-brand-700 mt-1" id="stat-active-products">0</h3>
+            <span class="text-[11px] text-slate-500">Varietas Bibit Tersedia</span>
+          </div>
+        </div>
+
+        <!-- Interactive Chart & Low Stock List -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2 bg-white p-6 rounded-3xl border border-slate-200 shadow-xs">
+            <h3 class="font-bold text-slate-900 mb-4">Grafik Status Pesanan Bibitunggul.id</h3>
+            <div class="h-64">
+              <canvas id="adminOrderChart"></canvas>
+            </div>
+          </div>
+          <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs flex flex-col">
+            <h3 class="font-bold text-slate-900 mb-4">Peringatan Stok Menipis</h3>
+            <div id="admin-low-stock-list" class="space-y-3 flex-1 overflow-y-auto max-h-64">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: KELOLA PRODUK -->
+      <div id="admin-tab-produk" class="admin-subtab hidden space-y-4">
+        <div class="flex items-center justify-between">
+          <input type="text" id="admin-prod-search" onkeyup="window.renderAdminProducts()" placeholder="Cari produk bibit..." class="bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm w-72">
+          <button onclick="window.openProductFormModal()" class="px-4 py-2 bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg> Tambah Bibit Baru
+          </button>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-600 uppercase">
+                <tr>
+                  <th class="p-3.5">Produk</th>
+                  <th class="p-3.5">Kategori</th>
+                  <th class="p-3.5">Harga</th>
+                  <th class="p-3.5">Stok</th>
+                  <th class="p-3.5">Status</th>
+                  <th class="p-3.5 text-right">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="admin-products-table-body" class="divide-y divide-slate-100">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: KELOLA KATEGORI -->
+      <div id="admin-tab-kategori" class="admin-subtab hidden space-y-4">
+        <div class="flex justify-end">
+          <button onclick="window.openCategoryModal()" class="px-4 py-2 bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg> Tambah Kategori
+          </button>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-600 uppercase">
+              <tr>
+                <th class="p-3.5">ID</th>
+                <th class="p-3.5">Nama Kategori</th>
+                <th class="p-3.5">Deskripsi</th>
+                <th class="p-3.5 text-right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="admin-category-table-body" class="divide-y divide-slate-100">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 4: KELOLA PESANAN -->
+      <div id="admin-tab-pesanan" class="admin-subtab hidden space-y-4">
+        <div class="flex flex-wrap gap-2 items-center justify-between">
+          <div class="flex gap-2">
+            <select id="admin-order-filter-status" onchange="window.renderAdminOrders()" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
+              <option value="ALL">Semua Status</option>
+              <option value="Menunggu Pembayaran">Menunggu Pembayaran</option>
+              <option value="Dibayar">Dibayar</option>
+              <option value="Diproses">Diproses</option>
+              <option value="Dikirim">Dikirim</option>
+              <option value="Selesai">Selesai</option>
+              <option value="Dibatalkan">Dibatalkan</option>
+            </select>
+          </div>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-600 uppercase">
+                <tr>
+                  <th class="p-3.5">No. Pesanan</th>
+                  <th class="p-3.5">Pelanggan</th>
+                  <th class="p-3.5">Total</th>
+                  <th class="p-3.5">Metode</th>
+                  <th class="p-3.5">Status</th>
+                  <th class="p-3.5">Ubah Status</th>
+                </tr>
+              </thead>
+              <tbody id="admin-orders-table-body" class="divide-y divide-slate-100">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: DAFTAR PENGGUNA -->
+      <div id="admin-tab-pengguna" class="admin-subtab hidden space-y-4">
+        <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-600 uppercase">
+              <tr>
+                <th class="p-3.5">ID</th>
+                <th class="p-3.5">Nama & Username</th>
+                <th class="p-3.5">Email & Kontak</th>
+                <th class="p-3.5">Role</th>
+                <th class="p-3.5">Status</th>
+                <th class="p-3.5 text-right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="admin-users-table-body" class="divide-y divide-slate-100">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 6: LAPORAN PENJUALAN -->
+      <div id="admin-tab-laporan" class="admin-subtab hidden space-y-6">
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h3 class="font-bold text-slate-900 text-lg">Rekap Penjualan Bersih (Selesai)</h3>
+            <p class="text-xs text-slate-500">Hanya transaksi berstatus Selesai yang diperhitungkan.</p>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="window.exportReportExcel()" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-xl shadow-xs flex items-center gap-1.5">
+              Ekspor Data (CSV)
+            </button>
+            <button onclick="window.printReport()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl shadow-xs flex items-center gap-1.5">
+              Cetak / PDF
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs">
+            <h4 class="font-bold text-slate-900 mb-4">Produk Paling Laris Terjual</h4>
+            <div id="admin-top-selling-products" class="space-y-3">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+          <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs">
+            <h4 class="font-bold text-slate-900 mb-4">Metode Pembayaran Pilihan</h4>
+            <div id="admin-payment-methods-breakdown" class="space-y-3">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- MODAL: DETAIL PRODUK & ULASAN              -->
+  <!-- ========================================== -->
+  <div id="modal-product-detail" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 relative shadow-2xl">
+      <button onclick="window.closeProductDetailModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-full p-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <img id="detail-img" src="" alt="Produk Bibit" class="w-full h-64 object-cover rounded-2xl shadow-inner border border-slate-100">
+          <div class="mt-4 flex items-center justify-between">
+            <span id="detail-category-badge" class="px-2.5 py-1 bg-brand-50 text-brand-700 text-xs font-bold rounded-lg">Kategori</span>
+            <span id="detail-stock-badge" class="text-xs font-semibold text-slate-500">Stok: 0</span>
+          </div>
+        </div>
+        <div class="flex flex-col">
+          <h2 id="detail-title" class="text-2xl font-bold text-slate-900 leading-tight">Nama Bibit Tanaman</h2>
+          <div class="flex items-center gap-2 my-2">
+            <div id="detail-rating-stars" class="flex text-amber-400 text-sm">★★★★★</div>
+            <span id="detail-rating-text" class="text-xs text-slate-500 font-semibold">(5.0 / 2 Ulasan)</span>
+          </div>
+          <div id="detail-price" class="text-2xl font-extrabold text-brand-700 mb-4">Rp 0</div>
+          <p id="detail-desc" class="text-slate-600 text-xs sm:text-sm leading-relaxed flex-1 mb-6">Deskripsi produk bibit unggul tanaman...</p>
+
+          <div id="detail-action-container" class="mt-auto">
+            <!-- Dynamic button rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Review Section -->
+      <div class="mt-8 pt-6 border-t border-slate-200">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-bold text-slate-900">Ulasan Pembeli Terverifikasi</h3>
+          <button id="btn-open-review-form" onclick="window.triggerReviewForm()" class="hidden px-3 py-1.5 text-xs font-bold bg-brand-50 text-brand-700 hover:bg-brand-100 rounded-lg">
+            + Tulis Ulasan
+          </button>
+        </div>
+        <div id="detail-reviews-list" class="space-y-3">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: KERANJANG BELANJA (DRAWER)          -->
+  <!-- ========================================== -->
+  <div id="modal-cart-drawer" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs hidden flex justify-end">
+    <div class="bg-white w-full max-w-md h-full flex flex-col p-6 shadow-2xl relative fade-in">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-200">
+        <div class="flex items-center gap-2">
+          <h2 class="text-xl font-bold text-slate-900">Keranjang Belanja</h2>
+          <span id="drawer-cart-badge" class="px-2 py-0.5 bg-brand-100 text-brand-800 text-xs font-bold rounded-full">0 item</span>
+        </div>
+        <button onclick="window.closeCartDrawer()" class="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div id="drawer-cart-items" class="flex-1 overflow-y-auto py-4 space-y-3">
+        <!-- Rendered by JS -->
+      </div>
+
+      <div class="pt-4 border-t border-slate-200 space-y-3">
+        <div class="flex items-center justify-between text-sm">
+          <span class="text-slate-500 font-medium">Subtotal Pembelian:</span>
+          <span id="drawer-cart-subtotal" class="font-extrabold text-slate-900 text-lg">Rp 0</span>
+        </div>
+        <button onclick="window.openCheckoutModal()" id="btn-proceed-checkout" class="w-full py-3.5 bg-brand-700 hover:bg-brand-800 text-white font-bold rounded-xl shadow-lg shadow-brand-700/20 transition-all flex items-center justify-center gap-2">
+          <span>Lanjut ke Checkout</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: CHECKOUT                            -->
+  <!-- ========================================== -->
+  <div id="modal-checkout" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 shadow-2xl relative">
+      <button onclick="window.closeCheckoutModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 bg-slate-100 rounded-full p-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+
+      <h2 class="text-2xl font-bold text-slate-900 mb-6">Konfirmasi Checkout</h2>
+
+      <form id="form-checkout" onsubmit="window.handleProcessCheckout(event)" class="space-y-4">
+        <!-- 1. Ringkasan Bibit Dipesan -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label class="text-xs font-bold text-slate-800 uppercase flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-brand-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+              1. Bibit yang Dipesan
+            </label>
+            <span id="checkout-badge-type" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-50 text-brand-700 border border-brand-200">Pesanan Instan</span>
+          </div>
+          <div id="checkout-items-list" class="space-y-2 max-h-48 overflow-y-auto pr-1 border border-slate-200 rounded-2xl p-2.5 bg-slate-50">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- 2. Formulir Alamat Pengiriman (INLINE & TERSIMPAN) -->
+        <div class="bg-emerald-50/70 p-4 rounded-2xl border-2 border-emerald-300/80 shadow-xs">
+          <div class="flex items-center justify-between mb-3">
+            <label class="text-xs font-black text-emerald-950 uppercase flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              2. Alamat Lengkap Pengiriman Bibit
+            </label>
+            <span class="text-[10px] font-bold text-emerald-800 bg-emerald-200/70 px-2.5 py-0.5 rounded-full">Garansi Bibit Hidup</span>
+          </div>
+
+          <!-- Opsi Alamat Tersimpan (Otomatis muncul untuk pelanggan dengan riwayat alamat) -->
+          <div id="checkout-saved-address-section" class="mb-3 hidden">
+            <label class="block text-[11px] font-semibold text-slate-700 mb-1">Pilih dari Alamat Tersimpan:</label>
+            <select id="checkout-saved-address-select" onchange="window.handleSelectSavedAddress(this.value)" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-600">
+              <!-- Populated by JS -->
+            </select>
+          </div>
+
+          <!-- Input Alamat Pengiriman Langsung -->
+          <div class="space-y-2.5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-800 mb-1">Nama Penerima <span class="text-rose-500">*</span></label>
+                <input type="text" id="checkout-name" required placeholder="Nama lengkap penerima" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 font-medium placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-600 focus:border-brand-600">
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-800 mb-1">No. WhatsApp / HP <span class="text-rose-500">*</span></label>
+                <input type="tel" id="checkout-phone" required placeholder="Contoh: 081234567890" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 font-medium placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-600 focus:border-brand-600">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold text-slate-800 mb-1">Alamat Pengiriman (Jalan, RT/RW, Dusun, Desa/Kelurahan, Kec.) <span class="text-rose-500">*</span></label>
+              <textarea id="checkout-address-detail" required rows="2" placeholder="Tuliskan nama jalan, nomor rumah, RT/RW, patokan lokasi, kelurahan & kecamatan" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 font-medium placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-600 focus:border-brand-600"></textarea>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-800 mb-1">Kota / Kabupaten <span class="text-rose-500">*</span></label>
+                <input type="text" id="checkout-city" required placeholder="Contoh: Surabaya" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 font-medium placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-600 focus:border-brand-600">
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-800 mb-1">Kode Pos (Opsional)</label>
+                <input type="text" id="checkout-postal" placeholder="Contoh: 60111" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 font-medium placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-600 focus:border-brand-600">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Metode Pembayaran -->
+        <div>
+          <label class="block text-xs font-bold text-slate-800 uppercase mb-2">3. Metode Pembayaran</label>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="flex items-center gap-2.5 p-3 border-2 rounded-2xl cursor-pointer hover:border-brand-600 has-[:checked]:border-brand-700 has-[:checked]:bg-brand-50/50 transition-all">
+              <input type="radio" name="checkout-payment-method" value="transfer" checked class="text-brand-700 focus:ring-brand-500">
+              <div>
+                <span class="block text-xs font-bold text-slate-900">Transfer Bank</span>
+                <span class="block text-[10px] text-slate-500">Bank Mandiri</span>
+              </div>
+            </label>
+            <label class="flex items-center gap-2.5 p-3 border-2 rounded-2xl cursor-pointer hover:border-brand-600 has-[:checked]:border-brand-700 has-[:checked]:bg-brand-50/50 transition-all">
+              <input type="radio" name="checkout-payment-method" value="bayar di tempat" class="text-brand-700 focus:ring-brand-500">
+              <div>
+                <span class="block text-xs font-bold text-slate-900">Bayar di Tempat</span>
+                <span class="block text-[10px] text-slate-500">COD Kurir Bibit</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- 4. Ringkasan Tagihan -->
+        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2 text-xs">
+          <div class="flex justify-between text-slate-600">
+            <span>Total Bibit Dipesan:</span>
+            <span id="checkout-item-count" class="font-bold text-slate-800">0 bibit</span>
+          </div>
+          <div class="flex justify-between text-slate-600">
+            <span>Biaya Pengiriman:</span>
+            <span class="font-bold text-emerald-600">Gratis (Promo Bibitunggul)</span>
+          </div>
+          <div class="border-t border-slate-200 pt-2 flex justify-between text-sm font-extrabold text-slate-900">
+            <span>Total Pembayaran:</span>
+            <span id="checkout-grand-total" class="text-brand-700 text-base">Rp 0</span>
+          </div>
+        </div>
+
+        <!-- 5. Tombol Aksi Penyelesaian -->
+        <div class="space-y-2 pt-1">
+          <button type="submit" id="btn-submit-order" class="w-full py-3.5 bg-brand-700 hover:bg-brand-800 active:scale-[0.99] text-white font-black text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            <span>Konfirmasi & Buat Pesanan</span>
+          </button>
+
+          <button type="button" onclick="window.orderViaWhatsAppDirect()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center justify-center gap-2">
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            <span>⚡ Atau Pesan Cepat via WhatsApp (08813559211)</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: PETUNJUK TRANSFER & KONFIRMASI WA   -->
+  <!-- ========================================== -->
+  <div id="modal-payment-instructions" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 md:p-8 shadow-2xl relative fade-in">
+      <button onclick="window.closePaymentInstructionsModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 bg-slate-100 rounded-full p-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+
+      <div class="text-center mb-5">
+        <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-700 flex items-center justify-center mx-auto mb-2">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+        </div>
+        <h3 class="text-xl font-bold text-slate-900">Petunjuk Pembayaran Transfer</h3>
+        <p class="text-xs text-slate-500 mt-0.5">Selesaikan transfer manual agar pesanan bibit segera diproses</p>
+      </div>
+
+      <!-- Tagihan Box -->
+      <div class="bg-emerald-50/80 border border-emerald-200 rounded-2xl p-4 mb-4 text-center">
+        <span class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider block">Total yang Harus Ditransfer:</span>
+        <div id="instruction-order-total" class="text-2xl font-black text-brand-700 my-1">Rp 0</div>
+        <span class="text-xs text-slate-600 font-medium">No. Pesanan: <b id="instruction-order-no" class="font-mono text-slate-900">ORD-XXXX</b></span>
+      </div>
+
+      <!-- Bank List -->
+      <div class="space-y-2 mb-5">
+        <label class="block text-[11px] font-bold text-slate-500 uppercase">Rekening Resmi Pembayaran Bibitunggul.id:</label>
+        
+        <div class="p-4 bg-emerald-50/50 border-2 border-brand-600/30 rounded-2xl flex items-center justify-between shadow-xs">
+          <div>
+            <div class="flex items-center gap-1.5 mb-0.5">
+              <span class="w-2 h-2 rounded-full bg-brand-600"></span>
+              <span class="text-xs font-extrabold text-slate-900 uppercase">Bank Mandiri</span>
+            </div>
+            <span class="text-base font-mono font-black text-brand-700 tracking-wider block" id="rek-mandiri">1710015583571</span>
+            <span class="text-[11px] font-semibold text-slate-600 block mt-0.5">a.n. MOCH TANSYA AHSAN WA</span>
+          </div>
+          <button type="button" onclick="window.copyToClipboard('1710015583571', 'Nomor Rekening Mandiri')" class="px-3 py-1.5 bg-brand-700 hover:bg-brand-800 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+            Salin
+          </button>
+        </div>
+      </div>
+
+      <!-- WA Button & Close -->
+      <div class="space-y-2">
+        <button type="button" onclick="window.sendWhatsAppConfirmation()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-2 transition-all">
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+          Konfirmasi via WhatsApp ke Admin
+        </button>
+        <button type="button" onclick="window.closePaymentInstructionsModal()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl">
+          Tutup & Nanti Transfer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: PILIHAN BELI INSTANT (GUEST / WA)   -->
+  <!-- ========================================== -->
+  <div id="modal-guest-buy" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl relative fade-in">
+      <button onclick="window.closeGuestBuyModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 bg-slate-100 rounded-full p-1.5">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+
+      <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-700 flex items-center justify-center mx-auto mb-3">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      </div>
+
+      <h3 class="text-lg font-bold text-slate-900 mb-1">Beli Cepat & Praktis</h3>
+      <p class="text-xs text-slate-500 mb-3">Pilih cara pemesanan yang paling mudah untuk Anda:</p>
+
+      <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl mb-4 text-left">
+        <span class="text-[10px] text-slate-400 font-bold uppercase block">Bibit Pilihan:</span>
+        <h4 id="guest-buy-product-name" class="font-extrabold text-slate-900 text-xs line-clamp-1">Bibit Tanaman</h4>
+        <span id="guest-buy-product-price" class="text-xs font-bold text-brand-700 block">Rp 0</span>
+      </div>
+
+      <div class="space-y-2">
+        <button type="button" onclick="window.orderViaWhatsAppDirect()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-2 transition-all">
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+          ⚡ Pesan Cepat via WhatsApp (Tanpa Akun)
+        </button>
+
+        <button type="button" onclick="window.closeGuestBuyModal(); window.navigateTo('login')" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-all">
+          Masuk / Buat Akun Web
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: FORM ALAMAT                         -->
+  <!-- ========================================== -->
+  <div id="modal-address-form" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
+      <button onclick="window.closeAddressModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 bg-slate-100 rounded-full p-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+      <h3 class="text-xl font-bold text-slate-900 mb-4" id="modal-address-title">Tambah Alamat Baru</h3>
+      
+      <form id="form-address" onsubmit="window.handleSaveAddress(event)" class="space-y-3">
+        <input type="hidden" id="addr-id">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Nama Penerima</label>
+          <input type="text" id="addr-nama" required placeholder="Nama penerima paket" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Nomor HP</label>
+          <input type="tel" id="addr-nohp" required placeholder="08xxxxxxxxxx" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Alamat Lengkap</label>
+          <textarea id="addr-lengkap" required rows="2" placeholder="Nama jalan, nomor rumah, RT/RW, kelurahan" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs"></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Kota / Kabupaten</label>
+            <input type="text" id="addr-kota" required placeholder="Contoh: Bogor" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Kode Pos</label>
+            <input type="text" id="addr-kodepos" required placeholder="16115" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+          </div>
+        </div>
+        <div class="flex items-center gap-2 pt-1">
+          <input type="checkbox" id="addr-default" class="rounded text-brand-700 focus:ring-brand-500">
+          <label for="addr-default" class="text-xs text-slate-700 font-medium">Jadikan Alamat Utama</label>
+        </div>
+        <button type="submit" class="w-full mt-3 py-2.5 bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs rounded-xl shadow-xs">
+          Simpan Alamat
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: FORM ULASAN                         -->
+  <!-- ========================================== -->
+  <div id="modal-review-form" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
+      <button onclick="window.closeReviewModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 bg-slate-100 rounded-full p-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+      <h3 class="text-xl font-bold text-slate-900 mb-2">Beri Ulasan Bibit</h3>
+      <p class="text-xs text-slate-500 mb-4" id="review-product-name">Produk...</p>
+
+      <form id="form-review" onsubmit="window.handleSubmitReview(event)" class="space-y-4">
+        <input type="hidden" id="rev-product-id">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Rating (Bintang 1 - 5)</label>
+          <select id="rev-rating" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold">
+            <option value="5">★★★★★ (5 - Sangat Memuaskan & Segar)</option>
+            <option value="4">★★★★☆ (4 - Bagus Sesuai Deskripsi)</option>
+            <option value="3">★★★☆☆ (3 - Cukup Baik)</option>
+            <option value="2">★★☆☆☆ (2 - Kurang Memuaskan)</option>
+            <option value="1">★☆☆☆☆ (1 - Kecewa)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Komentar / Pengalaman Tanam</label>
+          <textarea id="rev-komentar" required rows="3" placeholder="Ceritakan kondisi bibit saat tiba, daun, akar, atau kecepatan pengiriman..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs"></textarea>
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs rounded-xl shadow-xs">
+          Kirim Ulasan Sekarang
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: FORM PRODUK (ADMIN)                 -->
+  <!-- ========================================== -->
+  <div id="modal-product-form" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <button onclick="window.closeProductFormModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 bg-slate-100 rounded-full p-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+      <h3 class="text-xl font-bold text-slate-900 mb-4" id="modal-product-form-title">Kelola Bibit Produk</h3>
+
+      <form id="form-admin-product" onsubmit="window.handleSaveProduct(event)" class="space-y-3">
+        <input type="hidden" id="adm-prod-id">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Nama Produk Bibit</label>
+          <input type="text" id="adm-prod-name" required placeholder="Contoh: Bibit Kelengkeng New Kristal" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Kategori</label>
+            <select id="adm-prod-category" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+              <!-- Populated by JS -->
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Harga (Rp)</label>
+            <input type="number" id="adm-prod-price" required min="0" placeholder="50000" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Stok Jumlah</label>
+            <input type="number" id="adm-prod-stock" required min="0" placeholder="25" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Status Publikasi</label>
+            <select id="adm-prod-status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+              <option value="true">Aktif (Tampil)</option>
+              <option value="false">Nonaktif (Sembunyikan)</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">URL Foto Bibit (Unsplash / Google Drive)</label>
+          <input type="url" id="adm-prod-photo" required placeholder="https://images.unsplash.com/..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Deskripsi & Keunggulan Bibit</label>
+          <textarea id="adm-prod-desc" required rows="3" placeholder="Jelaskan jenis bibit, asal okulasi, masa berbuah, dan perawatan..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs"></textarea>
+        </div>
+        <button type="submit" class="w-full mt-2 py-2.5 bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs rounded-xl shadow-xs">
+          Simpan Data Bibit
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: FORM KATEGORI (ADMIN)               -->
+  <!-- ========================================== -->
+  <div id="modal-category-form" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl relative">
+      <button onclick="window.closeCategoryModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 bg-slate-100 rounded-full p-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+      <h3 class="text-xl font-bold text-slate-900 mb-4" id="modal-category-form-title">Tambah Kategori</h3>
+
+      <form id="form-admin-category" onsubmit="window.handleSaveCategory(event)" class="space-y-3">
+        <input type="hidden" id="adm-cat-id">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Nama Kategori</label>
+          <input type="text" id="adm-cat-name" required placeholder="Contoh: Bibit Tanaman Obat" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Deskripsi Singkat</label>
+          <textarea id="adm-cat-desc" rows="2" placeholder="Keterangan kategori..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs"></textarea>
+        </div>
+        <button type="submit" class="w-full mt-2 py-2.5 bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs rounded-xl shadow-xs">
+          Simpan Kategori
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- FOOTER                                     -->
+  <!-- ========================================== -->
+  <footer class="bg-slate-900 text-slate-400 py-10 mt-16 text-xs border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div>
+        <span class="text-lg font-bold text-white tracking-tight flex items-center mb-2">
+          Bibit<span class="text-brand-500">unggul</span><span class="text-accent-400">.id</span>
+        </span>
+        <p class="text-slate-400 leading-relaxed mb-4">
+          Marketplace terpercaya untuk belanja bibit tanaman unggul asli dengan garansi pengiriman aman se-Indonesia.
+        </p>
+        <span class="inline-block px-2.5 py-1 bg-brand-950 text-brand-400 border border-brand-800 rounded-lg text-[10px] font-mono">
+          Container-Bound Google Apps Script
+        </span>
+      </div>
+      <div>
+        <h4 class="font-bold text-white uppercase tracking-wider mb-3">Tautan Cepat</h4>
+        <ul class="space-y-2">
+          <li><a href="javascript:void(0)" onclick="window.navigateTo('home')" class="hover:text-white">Beranda</a></li>
+          <li><a href="javascript:void(0)" onclick="window.navigateTo('katalog')" class="hover:text-white">Katalog Bibit</a></li>
+          <li><a href="javascript:void(0)" onclick="window.navigateTo('my-orders')" class="hover:text-white">Lacak Pesanan</a></li>
+          <li><a href="javascript:void(0)" onclick="window.navigateTo('login')" class="hover:text-white">Login Admin / Akun</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-bold text-white uppercase tracking-wider mb-3">Bantuan & Layanan</h4>
+        <ul class="space-y-2">
+          <li>Garansi Bibit Tiba Selamat</li>
+          <li>Panduan Menanam & Pemupukan</li>
+          <li>Ketentuan COD & Transfer Manual</li>
+          <li>FAQ Pelanggan</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-bold text-white uppercase tracking-wider mb-3">Runtime Engine</h4>
+        <p class="leading-relaxed mb-2 text-slate-400">
+          Dibangun dengan arsitektur <b>0ms Instant UX</b> dan <b>Optimistic Local Sync</b>.
+        </p>
+        <p class="text-[11px] text-slate-500 font-mono">
+          Generated by Doople Apps Script | By @doople
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================== -->
+  <!-- FLOATING WHATSAPP CHAT BUTTON              -->
+  <!-- ========================================== -->
+  <aside aria-label="Konsultasi WhatsApp" class="fixed bottom-20 md:bottom-6 right-5 z-40 flex items-center group">
+    <a href="https://wa.me/628813559211?text=Halo%20Admin%20Bibitunggul.id,%20saya%20ingin%20tanya-tanya%20seputar%20bibit%20tanaman%20yang%20tersedia." target="_blank" class="flex items-center gap-2.5 pl-3.5 pr-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full shadow-2xl hover:scale-105 transition-all duration-200 border-2 border-white ring-4 ring-emerald-500/20 group">
+      <div class="relative">
+        <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+        <span class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-accent-400 animate-ping"></span>
+        <span class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-accent-400"></span>
+      </div>
+      <div class="flex flex-col text-left">
+        <span class="text-[9px] font-bold text-emerald-100 uppercase tracking-wider leading-tight">Ada Pertanyaan?</span>
+        <span class="text-xs font-black leading-tight">Tanya Admin WhatsApp</span>
+      </div>
+    </a>
+  </aside>
+
+  <!-- ========================================== -->
+  <!-- MOBILE BOTTOM NAVIGATION BAR               -->
+  <!-- ========================================== -->
+  <div class="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 py-2 px-6 flex justify-around md:hidden shadow-lg">
+    <button onclick="window.navigateTo('home')" class="flex flex-col items-center text-slate-600 hover:text-brand-700">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      <span class="text-[10px] font-semibold mt-0.5">Beranda</span>
+    </button>
+    <button onclick="window.navigateTo('katalog')" class="flex flex-col items-center text-slate-600 hover:text-brand-700">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      <span class="text-[10px] font-semibold mt-0.5">Katalog</span>
+    </button>
+    <button onclick="window.openCartDrawer()" class="flex flex-col items-center text-slate-600 hover:text-brand-700 relative">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+      <span id="mobile-cart-badge" class="absolute -top-1 right-2 bg-brand-600 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+      <span class="text-[10px] font-semibold mt-0.5">Keranjang</span>
+    </button>
+    <button onclick="window.handleMobileAccountClick()" class="flex flex-col items-center text-slate-600 hover:text-brand-700">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+      <span class="text-[10px] font-semibold mt-0.5" id="mobile-user-label">Akun</span>
+    </button>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- JAVASCRIPT CORE CLIENT SPA ENGINE          -->
+  <!-- ========================================== -->
+  <script>
+    // 1. RUNTIME DETECTION (DUAL-MODE: MOCK PREVIEW & GAS LIVE)
+    window.isGAS = (typeof google !== 'undefined' && google.script && typeof google.script.run !== 'undefined');
+
+    // 2. CENTRAL CLIENT STATE (INSTANT UX)
+    window.appState = {
+      accessMode: 'hybrid',
+      currentUser: null,
+      authToken: null,
+      isAuth: false,
+      categories: [],
+      products: [],
+      cart: [], // [{ Produk_ID, Jumlah }]
+      addresses: [],
+      orders: [],
+      orderDetails: [],
+      users: [],
+      reviews: [],
+      activeCategoryFilter: 'ALL',
+      searchQuery: '',
+      currentSelectedProduct: null
+    };
+
+    // 3. TOAST NOTIFICATION UTILITY
+    window.showToast = function(message, type) {
+      type = type || 'success';
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+
+      const toast = document.createElement('div');
+      const bgColors = {
+        success: 'bg-emerald-900 border-emerald-700 text-white',
+        error: 'bg-rose-900 border-rose-700 text-white',
+        warning: 'bg-amber-900 border-amber-700 text-white'
+      };
+      const icons = {
+        success: '<svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>',
+        error: '<svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>',
+        warning: '<svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>'
+      };
+
+      toast.className = 'flex items-center gap-3 p-4 rounded-2xl border shadow-xl text-xs font-semibold fade-in pointer-events-auto ' + (bgColors[type] || bgColors.success);
+      toast.innerHTML = (icons[type] || icons.success) + '<span>' + message + '</span>';
+
+      container.appendChild(toast);
+      setTimeout(function() {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-10px)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(function() { toast.remove(); }, 300);
+      }, 3500);
+    };
+
+    // 4. NUMBER FORMATTER
+    window.formatRupiah = function(number) {
+      return 'Rp ' + Number(number || 0).toLocaleString('id-ID');
+    };
+
+    // 5. 0ms SPA ROUTING & NAVIGATION
+    window.navigateTo = function(viewId) {
+      // Guard Navigasi untuk Menu Terproteksi
+      const protectedViews = ['my-orders', 'my-addresses', 'my-profile'];
+      if (protectedViews.includes(viewId) && !window.appState.isAuth) {
+        window.showToast('Harap login terlebih dahulu untuk mengakses menu ini', 'warning');
+        window.navigateTo('login');
+        return;
+      }
+      if (viewId === 'admin' && (!window.appState.isAuth || window.appState.currentUser.Role !== 'Admin')) {
+        window.showToast('Akses khusus Administrator.', 'error');
+        window.navigateTo('home');
+        return;
+      }
+
+      const views = document.querySelectorAll('.spa-view');
+      views.forEach(function(v) { v.classList.add('hidden'); });
+
+      const target = document.getElementById('view-' + viewId);
+      if (target) {
+        target.classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Render View Specific Data
+      if (viewId === 'katalog') window.renderCatalog();
+      if (viewId === 'my-orders') window.renderMyOrders();
+      if (viewId === 'my-addresses') window.renderMyAddresses();
+      if (viewId === 'admin') window.renderAdminDashboard();
+    };
+
+    window.scrollToSection = function(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    // 6. INITIAL DATA LOADING (MOCK OR GAS)
+    window.initApplication = function() {
+      // Load saved state from localStorage if available
+      const savedUser = localStorage.getItem('bibit_user');
+      const savedToken = localStorage.getItem('bibit_token');
+      const savedCart = localStorage.getItem('bibit_cart');
+
+      if (savedUser && savedToken) {
+        try {
+          window.appState.currentUser = JSON.parse(savedUser);
+          window.appState.authToken = savedToken;
+          window.appState.isAuth = true;
+        } catch(e) {}
+      }
+      if (savedCart) {
+        try { window.appState.cart = JSON.parse(savedCart); } catch(e) {}
+      }
+
+      if (window.isGAS) {
+        // GAS LIVE MODE
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (res && res.success) {
+              window.appState.categories = res.data.categories;
+              window.appState.products = res.data.products;
+              window.appState.reviews = res.data.reviews;
+              window.renderHome();
+              window.renderCatalog();
+              window.updateAuthUI();
+              window.updateCartBadge();
+            }
+          })
+          .getPublicData();
+      } else {
+        // MOCK MODE (PREVIEW LOCAL)
+        window.initMockData();
+        window.renderHome();
+        window.renderCatalog();
+        window.updateAuthUI();
+        window.updateCartBadge();
+      }
+    };
+
+    // 7. MOCK DATABASE SEEDER (0ms INSTANT LOCAL RUNTIME)
+    window.initMockData = function() {
+      const savedMockData = localStorage.getItem('bibit_mock_db');
+      if (savedMockData) {
+        try {
+          const db = JSON.parse(savedMockData);
+          window.appState.categories = db.categories;
+          window.appState.products = db.products;
+          window.appState.addresses = db.addresses;
+          window.appState.orders = db.orders;
+          window.appState.orderDetails = db.orderDetails;
+          window.appState.users = db.users;
+          window.appState.reviews = db.reviews;
+          // Sinkronisasi data rekening & kontak admin terbaru
+          const adm = window.appState.users.find(u => u.Role === 'Admin' || u.Username === 'admin');
+          if (adm) {
+            adm.Nama_Lengkap = 'MOCH TANSYA AHSAN WA';
+            adm.No_HP = '08813559211';
+          }
+          return;
+        } catch(e) {}
+      }
+
+      // Default Seed Data
+      window.appState.categories = [
+        { Kategori_ID: 'CAT-001', Nama_Kategori: 'Bibit Buah Unggul', Deskripsi: 'Pohon buah okulasi genjah cepat berbuah' },
+        { Kategori_ID: 'CAT-002', Nama_Kategori: 'Bibit Tanaman Hias', Deskripsi: 'Tanaman daun & bunga estetik hunian' },
+        { Kategori_ID: 'CAT-003', Nama_Kategori: 'Bibit Sayuran & Herbal', Deskripsi: 'Bibit sayur segar organik dan apotek hidup' },
+        { Kategori_ID: 'CAT-004', Nama_Kategori: 'Bibit Kayu & Perkebunan', Deskripsi: 'Investasi pohon kayu berkualitas tinggi' }
+      ];
+
+      window.appState.products = [
+        {
+          Produk_ID: 'PRD-001',
+          Kategori_ID: 'CAT-001',
+          Nama_Produk: 'Bibit Alpukat Mentega Miki Super',
+          Deskripsi: 'Bibit alpukat okulasi unggul, daging tebal pulen tanpa serat, mulai berbuah usia 2-3 tahun.',
+          Harga: 65000,
+          Stok: 45,
+          Foto_URL: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=800&auto=format&fit=crop&q=80',
+          Status: true
+        },
+        {
+          Produk_ID: 'PRD-002',
+          Kategori_ID: 'CAT-001',
+          Nama_Produk: 'Bibit Mangga Kiojay Jumbo Asli',
+          Deskripsi: 'Mangga asal Thailand dengan bobot buah hingga 2 kg per butir, rasa manis legit dan renyah.',
+          Harga: 55000,
+          Stok: 30,
+          Foto_URL: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=800&auto=format&fit=crop&q=80',
+          Status: true
+        },
+        {
+          Produk_ID: 'PRD-003',
+          Kategori_ID: 'CAT-001',
+          Nama_Produk: 'Bibit Durian Musang King Kaki 3',
+          Deskripsi: 'Durian premium dengan kaki tiga untuk penyerapan nutrisi maksimal dan tahan rebah.',
+          Harga: 125000,
+          Stok: 20,
+          Foto_URL: 'https://images.unsplash.com/photo-1587393855524-087f83d95bc9?w=800&auto=format&fit=crop&q=80',
+          Status: true
+        },
+        {
+          Produk_ID: 'PRD-004',
+          Kategori_ID: 'CAT-001',
+          Nama_Produk: 'Bibit Jeruk Dekopon Tanpa Biji',
+          Deskripsi: 'Jeruk manis khas Jepang berukuran besar dengan cita rasa sangat manis berair dan berkulit tebal mudah dikupas.',
+          Harga: 48000,
+          Stok: 50,
+          Foto_URL: 'https://images.unsplash.com/photo-1582979512210-99b6a53386f9?w=800&auto=format&fit=crop&q=80',
+          Status: true
+        },
+        {
+          Produk_ID: 'PRD-005',
+          Kategori_ID: 'CAT-002',
+          Nama_Produk: 'Monstera Deliciosa King Size',
+          Deskripsi: 'Tanaman hias kekinian dengan daun robek eksotis berakar angin sehat, siap menghiasi sudut ruang tamu.',
+          Harga: 85000,
+          Stok: 15,
+          Foto_URL: 'https://images.unsplash.com/photo-1614594975525-e45190c55d0b?w=800&auto=format&fit=crop&q=80',
+          Status: true
+        },
+        {
+          Produk_ID: 'PRD-006',
+          Kategori_ID: 'CAT-002',
+          Nama_Produk: 'Aglonema Suksom Jaipong Merah Merona',
+          Deskripsi: 'Tanaman hias dengan corak merah membara sangat stabil, daun kompak, dan akar sehat berpot gerabah.',
+          Harga: 75000,
+          Stok: 25,
+          Foto_URL: 'https://images.unsplash.com/photo-1600411833196-7c1f6b1a8b90?w=800&auto=format&fit=crop&q=80',
+          Status: true
+        },
+        {
+          Produk_ID: 'PRD-007',
+          Kategori_ID: 'CAT-003',
+          Nama_Produk: 'Bibit Cabai Rawit Hibrida Rawita',
+          Deskripsi: 'Tanaman cabai rawit produktivitas tinggi, buah lebat tahan layu bakteri, panen melimpah di pekarangan rumah.',
+          Harga: 15000,
+          Stok: 80,
+          Foto_URL: 'https://images.unsplash.com/photo-1588252303782-cb80119abd6d?w=800&auto=format&fit=crop&q=80',
+          Status: true
+        },
+        {
+          Produk_ID: 'PRD-008',
+          Kategori_ID: 'CAT-004',
+          Nama_Produk: 'Bibit Kayu Gaharu Aquilaria',
+          Deskripsi: 'Bibit pohon bernilai ekonomis tinggi untuk investasi masa depan, kayu aromatik berharga ekspor.',
+          Harga: 95000,
+          Stok: 0, // Habis untuk verifikasi label
+          Foto_URL: 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?w=800&auto=format&fit=crop&q=80',
+          Status: true
+        }
+      ];
+
+      window.appState.addresses = [
+        {
+          Alamat_ID: 'ALM-001',
+          User_ID: 'USR-002',
+          Nama_Penerima: 'Budi Santoso',
+          No_HP: '085712345678',
+          Alamat_Lengkap: 'Jl. Merpati Putih No. 42 RT 03/05, Kebayoran Baru',
+          Kota: 'Jakarta Selatan',
+          Kode_Pos: '12130',
+          Is_Default: true
+        }
+      ];
+
+      window.appState.orders = [
+        {
+          Pesanan_ID: 'ORD-001',
+          No_Pesanan: 'ORD-20261101-001',
+          User_ID: 'USR-002',
+          Alamat_ID: 'ALM-001',
+          Total: 185000,
+          Metode_Bayar: 'transfer',
+          Status: 'Selesai',
+          Tanggal: '2026-11-01 10:15:00'
+        },
+        {
+          Pesanan_ID: 'ORD-002',
+          No_Pesanan: 'ORD-20261103-002',
+          User_ID: 'USR-002',
+          Alamat_ID: 'ALM-001',
+          Total: 125000,
+          Metode_Bayar: 'bayar di tempat',
+          Status: 'Dikirim',
+          Tanggal: '2026-11-03 14:30:00'
+        }
+      ];
+
+      window.appState.orderDetails = [
+        { Detail_ID: 'DTL-001', Pesanan_ID: 'ORD-001', Produk_ID: 'PRD-001', Nama_Produk: 'Bibit Alpukat Mentega Miki Super', Harga: 65000, Jumlah: 2, Subtotal: 130000 },
+        { Detail_ID: 'DTL-002', Pesanan_ID: 'ORD-001', Produk_ID: 'PRD-002', Nama_Produk: 'Bibit Mangga Kiojay Jumbo Asli', Harga: 55000, Jumlah: 1, Subtotal: 55000 },
+        { Detail_ID: 'DTL-003', Pesanan_ID: 'ORD-002', Produk_ID: 'PRD-003', Nama_Produk: 'Bibit Durian Musang King Kaki 3', Harga: 125000, Jumlah: 1, Subtotal: 125000 }
+      ];
+
+      window.appState.reviews = [
+        { Ulasan_ID: 'REV-001', Produk_ID: 'PRD-001', User_ID: 'USR-002', Rating: 5, Komentar: 'Bibit datang dalam keadaan sangat segar, daun rimbun dan akar lebat! Sangat recommended.', Tanggal: '2026-11-02 11:20:00' },
+        { Ulasan_ID: 'REV-002', Produk_ID: 'PRD-002', User_ID: 'USR-002', Rating: 5, Komentar: 'Packaging kayu kokoh, bibit okulasi rapi dan sudah ada tunas baru. Mantap Bibitunggul.id!', Tanggal: '2026-11-02 11:22:00' }
+      ];
+
+      window.appState.users = [
+        { User_ID: 'USR-001', Username: 'admin', Nama_Lengkap: 'MOCH TANSYA AHSAN WA', Email: 'admin@bibitunggul.id', No_HP: '08813559211', Role: 'Admin', Status: true, Tanggal_Daftar: '2026-11-01' },
+        { User_ID: 'USR-002', Username: 'pelanggan', Nama_Lengkap: 'Budi Santoso', Email: 'budi@gmail.com', No_HP: '085712345678', Role: 'Pelanggan', Status: true, Tanggal_Daftar: '2026-11-01' }
+      ];
+
+      window.saveMockDatabase();
+    };
+
+    window.saveMockDatabase = function() {
+      const db = {
+        categories: window.appState.categories,
+        products: window.appState.products,
+        addresses: window.appState.addresses,
+        orders: window.appState.orders,
+        orderDetails: window.appState.orderDetails,
+        users: window.appState.users,
+        reviews: window.appState.reviews
+      };
+      localStorage.setItem('bibit_mock_db', JSON.stringify(db));
+    };
+
+    // 8. RENDER HOME VIEW
+    window.renderHome = function() {
+      // Category Grid
+      const catContainer = document.getElementById('home-category-grid');
+      if (catContainer) {
+        catContainer.innerHTML = window.appState.categories.map(function(c) {
+          return '<div onclick="window.filterByCategory(\'' + c.Kategori_ID + '\')" class="p-5 bg-white border border-slate-200 rounded-2xl hover:border-brand-600 hover:shadow-md cursor-pointer transition-all group">' +
+            '<div class="w-10 h-10 rounded-xl bg-brand-50 text-brand-700 flex items-center justify-center mb-3 group-hover:bg-brand-700 group-hover:text-white transition-colors">' +
+              '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>' +
+            '</div>' +
+            '<h4 class="font-bold text-slate-900 text-sm group-hover:text-brand-700">' + c.Nama_Kategori + '</h4>' +
+            '<p class="text-slate-500 text-[11px] line-clamp-1 mt-1">' + c.Deskripsi + '</p>' +
+          '</div>';
+        }).join('');
+      }
+
+      // Featured Products (ambil 4 pertama)
+      const featContainer = document.getElementById('home-featured-grid');
+      if (featContainer) {
+        const feat = window.appState.products.slice(0, 4);
+        featContainer.innerHTML = feat.map(window.createProductCardHtml).join('');
+      }
+    };
+
+    // 9. RENDER CATALOG VIEW
+    window.renderCatalog = function() {
+      // Category Chips
+      const chipsContainer = document.getElementById('catalog-category-chips');
+      if (chipsContainer) {
+        let chips = '<button onclick="window.filterByCategory(\'ALL\')" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all ' +
+          (window.appState.activeCategoryFilter === 'ALL' ? 'bg-brand-700 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200') +
+          '">Semua Kategori</button>';
+
+        window.appState.categories.forEach(function(c) {
+          const active = window.appState.activeCategoryFilter === c.Kategori_ID;
+          chips += '<button onclick="window.filterByCategory(\'' + c.Kategori_ID + '\')" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all ' +
+            (active ? 'bg-brand-700 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200') +
+            '">' + c.Nama_Kategori + '</button>';
+        });
+        chipsContainer.innerHTML = chips;
+      }
+
+      // Filtered Products
+      const grid = document.getElementById('catalog-product-grid');
+      const empty = document.getElementById('catalog-empty-state');
+      if (!grid) return;
+
+      const filtered = window.appState.products.filter(function(p) {
+        const matchesCategory = window.appState.activeCategoryFilter === 'ALL' || p.Kategori_ID === window.appState.activeCategoryFilter;
+        const q = (window.appState.searchQuery || '').toLowerCase();
+        const matchesQuery = !q || p.Nama_Produk.toLowerCase().includes(q) || p.Deskripsi.toLowerCase().includes(q);
+        const isActive = p.Status === true || p.Status === 'true';
+        return matchesCategory && matchesQuery && isActive;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        empty.classList.remove('hidden');
+      } else {
+        empty.classList.add('hidden');
+        grid.innerHTML = filtered.map(window.createProductCardHtml).join('');
+      }
+    };
+
+    window.createProductCardHtml = function(p) {
+      const isOutOfStock = p.Stok <= 0;
+      const cat = window.appState.categories.find(c => c.Kategori_ID === p.Kategori_ID);
+      const catName = cat ? cat.Nama_Kategori : 'Bibit Tanaman';
+
+      return '<div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-xl hover:border-brand-500 transition-all flex flex-col group">' +
+        '<div class="relative h-48 overflow-hidden bg-slate-100 cursor-pointer" onclick="window.openProductDetailModal(\'' + p.Produk_ID + '\')">' +
+          '<img src="' + p.Foto_URL + '" alt="' + p.Nama_Produk + '" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">' +
+          (isOutOfStock ? '<span class="absolute top-3 left-3 px-2.5 py-1 badge-habis text-white text-[10px] font-extrabold uppercase rounded-lg shadow-md tracking-wider">Stok Habis</span>' : '<span class="absolute top-3 left-3 px-2.5 py-1 bg-white/90 backdrop-blur-md text-brand-800 text-[10px] font-extrabold uppercase rounded-lg shadow-xs tracking-wider">Tersedia (' + p.Stok + ')</span>') +
+          '<span class="absolute top-3 right-3 px-2.5 py-1 bg-slate-900/70 backdrop-blur-md text-white text-[10px] font-semibold rounded-lg">' + catName + '</span>' +
+        '</div>' +
+        '<div class="p-5 flex-1 flex flex-col">' +
+          '<h3 onclick="window.openProductDetailModal(\'' + p.Produk_ID + '\')" class="font-bold text-slate-900 text-base leading-snug line-clamp-1 hover:text-brand-700 cursor-pointer mb-1">' + p.Nama_Produk + '</h3>' +
+          '<p class="text-xs text-slate-500 line-clamp-2 mb-4 flex-1 leading-relaxed">' + p.Deskripsi + '</p>' +
+          '<div class="flex items-center justify-between pt-3 border-t border-slate-100">' +
+            '<div>' +
+              '<span class="text-[10px] text-slate-400 block font-medium">Harga Satuan</span>' +
+              '<span class="text-base font-extrabold text-brand-700">' + window.formatRupiah(p.Harga) + '</span>' +
+            '</div>' +
+            (isOutOfStock
+              ? '<button disabled class="px-3 py-1.5 bg-slate-100 text-slate-400 text-xs font-bold rounded-xl cursor-not-allowed">Habis</button>'
+              : '<div class="flex items-center gap-1.5">' +
+                  '<button onclick="event.stopPropagation(); window.askProductViaWhatsApp(\'' + p.Produk_ID + '\')" class="p-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-xl transition-all" title="Tanya Bibit via WhatsApp">' +
+                    '<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>' +
+                  '</button>' +
+                  '<button onclick="event.stopPropagation(); window.handleInstantBuy(\'' + p.Produk_ID + '\')" class="px-3 py-1.5 bg-brand-700 hover:bg-brand-800 active:scale-95 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1">' +
+                    '⚡ Beli' +
+                  '</button>' +
+                '</div>') +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    };
+
+    // 10. FILTER ACTIONS
+    window.filterByCategory = function(catId) {
+      window.appState.activeCategoryFilter = catId;
+      window.navigateTo('katalog');
+    };
+
+    let searchTimer = null;
+    window.handleDebouncedSearch = function(event) {
+      clearTimeout(searchTimer);
+      const val = event.target.value;
+      searchTimer = setTimeout(function() {
+        window.appState.searchQuery = val;
+        window.renderCatalog();
+      }, 300);
+    };
+
+    window.resetCatalogFilter = function() {
+      window.appState.activeCategoryFilter = 'ALL';
+      window.appState.searchQuery = '';
+      const s1 = document.getElementById('global-search-input');
+      const s2 = document.getElementById('catalog-search-input');
+      if (s1) s1.value = '';
+      if (s2) s2.value = '';
+      window.renderCatalog();
+    };
+
+    // 11. PRODUCT DETAIL MODAL & REVIEWS
+    window.openProductDetailModal = function(productId) {
+      const prod = window.appState.products.find(p => p.Produk_ID === productId);
+      if (!prod) return;
+
+      window.appState.currentSelectedProduct = prod;
+
+      document.getElementById('detail-img').src = prod.Foto_URL;
+      document.getElementById('detail-title').textContent = prod.Nama_Produk;
+      document.getElementById('detail-desc').textContent = prod.Deskripsi;
+      document.getElementById('detail-price').textContent = window.formatRupiah(prod.Harga);
+      document.getElementById('detail-stock-badge').textContent = 'Stok: ' + prod.Stok + ' bibit';
+
+      const cat = window.appState.categories.find(c => c.Kategori_ID === prod.Kategori_ID);
+      document.getElementById('detail-category-badge').textContent = cat ? cat.Nama_Kategori : 'Bibit';
+
+      // Reviews
+      const prodReviews = window.appState.reviews.filter(r => r.Produk_ID === productId);
+      const revContainer = document.getElementById('detail-reviews-list');
+      const ratingStars = document.getElementById('detail-rating-stars');
+      const ratingText = document.getElementById('detail-rating-text');
+
+      if (prodReviews.length === 0) {
+        revContainer.innerHTML = '<p class="text-xs text-slate-400 italic">Belum ada ulasan untuk bibit ini.</p>';
+        ratingStars.textContent = '★★★★★';
+        ratingText.textContent = '(Belum ada rating)';
+      } else {
+        const avg = (prodReviews.reduce((sum, r) => sum + Number(r.Rating), 0) / prodReviews.length).toFixed(1);
+        ratingStars.textContent = '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg));
+        ratingText.textContent = '(' + avg + ' / ' + prodReviews.length + ' Ulasan)';
+
+        revContainer.innerHTML = prodReviews.map(function(r) {
+          const user = window.appState.users.find(u => u.User_ID === r.User_ID);
+          const userName = user ? user.Nama_Lengkap : 'Pembeli Bibit Unggul';
+          return '<div class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs">' +
+            '<div class="flex items-center justify-between mb-1">' +
+              '<span class="font-bold text-slate-800">' + userName + '</span>' +
+              '<span class="text-amber-500 font-bold">' + '★'.repeat(r.Rating) + '</span>' +
+            '</div>' +
+            '<p class="text-slate-600">' + r.Komentar + '</p>' +
+            '<span class="text-[10px] text-slate-400 mt-1 block">' + (r.Tanggal || 'Baru saja') + '</span>' +
+          '</div>';
+        }).join('');
+      }
+
+      // Check Review Eligibility (User must be logged in & purchased this product with status Selesai)
+      const btnRev = document.getElementById('btn-open-review-form');
+      if (window.appState.isAuth) {
+        const userOrders = window.appState.orders.filter(o => o.User_ID === window.appState.currentUser.User_ID && o.Status === 'Selesai');
+        const userOrderIds = userOrders.map(o => o.Pesanan_ID);
+        const hasBought = window.appState.orderDetails.some(d => userOrderIds.includes(d.Pesanan_ID) && d.Produk_ID === productId);
+        const alreadyRev = window.appState.reviews.some(r => r.Produk_ID === productId && r.User_ID === window.appState.currentUser.User_ID);
+
+        if (hasBought && !alreadyRev) {
+          btnRev.classList.remove('hidden');
+        } else {
+          btnRev.classList.add('hidden');
+        }
+      } else {
+        btnRev.classList.add('hidden');
+      }
+
+      // Action Button
+      const actionBox = document.getElementById('detail-action-container');
+      if (prod.Stok <= 0) {
+        actionBox.innerHTML = '<div class="space-y-2">' +
+          '<button disabled class="w-full py-3 bg-slate-200 text-slate-400 font-bold text-xs rounded-xl cursor-not-allowed">Stok Bibit Habis</button>' +
+          '<button onclick="window.askProductViaWhatsApp(\'' + prod.Produk_ID + '\')" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs flex items-center justify-center gap-2 transition-all">' +
+            '<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg> Tanya Kapan Restock via WhatsApp' +
+          '</button>' +
+        '</div>';
+      } else {
+        actionBox.innerHTML = '<div class="space-y-2.5">' +
+          '<div class="grid grid-cols-2 gap-2">' +
+            '<button onclick="window.handleInstantBuy(\'' + prod.Produk_ID + '\')" class="w-full py-3 bg-brand-700 hover:bg-brand-800 text-white font-extrabold text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5 transition-all">' +
+              '⚡ Beli Langsung' +
+            '</button>' +
+            '<button onclick="window.handleAddToCart(\'' + prod.Produk_ID + '\')" class="w-full py-3 bg-brand-50 hover:bg-brand-100 text-brand-800 font-bold text-xs rounded-xl border border-brand-200 flex items-center justify-center gap-1.5 transition-all">' +
+              '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg> + Keranjang' +
+            '</button>' +
+          '</div>' +
+          '<button onclick="window.askProductViaWhatsApp(\'' + prod.Produk_ID + '\')" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs flex items-center justify-center gap-2 transition-all">' +
+            '<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>' +
+            'Tanya Admin via WhatsApp (Sebelum Beli)' +
+          '</button>' +
+        '</div>';
+      }
+
+      document.getElementById('modal-product-detail').classList.remove('hidden');
+    };
+
+    window.closeProductDetailModal = function() {
+      document.getElementById('modal-product-detail').classList.add('hidden');
+    };
+
+    // 12. CART LOGIC (OPTIMISTIC LOCAL & BACKGROUND SYNC)
+    window.handleAddToCart = function(productId) {
+      if (!window.appState.isAuth) {
+        window.showToast('Silakan login terlebih dahulu untuk memasukkan ke keranjang', 'warning');
+        window.navigateTo('login');
+        return;
+      }
+
+      const prod = window.appState.products.find(p => p.Produk_ID === productId);
+      if (!prod) return;
+      if (prod.Stok <= 0) {
+        window.showToast('Maaf, stok bibit ini sedang habis.', 'error');
+        return;
+      }
+
+      const existing = window.appState.cart.find(c => c.Produk_ID === productId);
+      if (existing) {
+        if (existing.Jumlah + 1 > prod.Stok) {
+          window.showToast('Jumlah melebihi stok yang tersedia (' + prod.Stok + ').', 'warning');
+          return;
+        }
+        existing.Jumlah += 1;
+      } else {
+        window.appState.cart.push({
+          Keranjang_ID: 'CRT-' + new Date().getTime(),
+          User_ID: window.appState.currentUser.User_ID,
+          Produk_ID: productId,
+          Jumlah: 1
+        });
+      }
+
+      // 0ms Optimistic Update
+      localStorage.setItem('bibit_cart', JSON.stringify(window.appState.cart));
+      window.updateCartBadge();
+      window.showToast('"' + prod.Nama_Produk + '" ditambahkan ke keranjang!', 'success');
+
+      // Background Sync to GAS if live
+      if (window.isGAS) {
+        google.script.run.syncCart(window.appState.authToken, window.appState.cart);
+      }
+    };
+
+    window.updateCartBadge = function() {
+      const totalCount = window.appState.cart.reduce((sum, item) => sum + item.Jumlah, 0);
+      const b1 = document.getElementById('cart-badge-count');
+      const b2 = document.getElementById('drawer-cart-badge');
+      const b3 = document.getElementById('mobile-cart-badge');
+      if (b1) b1.textContent = totalCount;
+      if (b2) b2.textContent = totalCount + ' item';
+      if (b3) b3.textContent = totalCount;
+    };
+
+    window.openCartDrawer = function() {
+      if (!window.appState.isAuth) {
+        window.showToast('Silakan login untuk membuka keranjang belanja.', 'warning');
+        window.navigateTo('login');
+        return;
+      }
+
+      const container = document.getElementById('drawer-cart-items');
+      const subtotalEl = document.getElementById('drawer-cart-subtotal');
+      const btnCheckout = document.getElementById('btn-proceed-checkout');
+
+      if (window.appState.cart.length === 0) {
+        container.innerHTML = '<div class="text-center py-12"><p class="text-slate-400 text-xs">Keranjang belanja Anda masih kosong.</p></div>';
+        subtotalEl.textContent = 'Rp 0';
+        btnCheckout.disabled = true;
+        btnCheckout.classList.add('opacity-50', 'cursor-not-allowed');
+      } else {
+        btnCheckout.disabled = false;
+        btnCheckout.classList.remove('opacity-50', 'cursor-not-allowed');
+
+        let subtotal = 0;
+        container.innerHTML = window.appState.cart.map(function(item) {
+          const prod = window.appState.products.find(p => p.Produk_ID === item.Produk_ID) || { Nama_Produk: 'Bibit', Harga: 0, Foto_URL: '' };
+          const itemTotal = prod.Harga * item.Jumlah;
+          subtotal += itemTotal;
+
+          return '<div class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-2xl">' +
+            '<img src="' + prod.Foto_URL + '" class="w-14 h-14 object-cover rounded-xl shrink-0">' +
+            '<div class="flex-1">' +
+              '<h4 class="font-bold text-slate-800 text-xs line-clamp-1">' + prod.Nama_Produk + '</h4>' +
+              '<span class="text-brand-700 font-extrabold text-xs">' + window.formatRupiah(prod.Harga) + '</span>' +
+              '<div class="flex items-center gap-2 mt-2">' +
+                '<button onclick="window.handleUpdateCartQty(\'' + item.Produk_ID + '\', -1)" class="w-6 h-6 rounded-lg bg-white border border-slate-200 text-slate-600 font-bold flex items-center justify-center hover:bg-slate-100">-</button>' +
+                '<span class="text-xs font-bold text-slate-800">' + item.Jumlah + '</span>' +
+                '<button onclick="window.handleUpdateCartQty(\'' + item.Produk_ID + '\', 1)" class="w-6 h-6 rounded-lg bg-white border border-slate-200 text-slate-600 font-bold flex items-center justify-center hover:bg-slate-100">+</button>' +
+              '</div>' +
+            '</div>' +
+            '<button onclick="window.handleRemoveCartItem(\'' + item.Produk_ID + '\')" class="p-2 text-rose-500 hover:text-rose-700 rounded-lg hover:bg-rose-50">' +
+              '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>' +
+            '</button>' +
+          '</div>';
+        }).join('');
+
+        subtotalEl.textContent = window.formatRupiah(subtotal);
+      }
+
+      document.getElementById('modal-cart-drawer').classList.remove('hidden');
+    };
+
+    window.closeCartDrawer = function() {
+      document.getElementById('modal-cart-drawer').classList.add('hidden');
+    };
+
+    window.handleUpdateCartQty = function(productId, delta) {
+      const item = window.appState.cart.find(c => c.Produk_ID === productId);
+      const prod = window.appState.products.find(p => p.Produk_ID === productId);
+      if (!item || !prod) return;
+
+      const newQty = item.Jumlah + delta;
+      if (newQty <= 0) {
+        window.handleRemoveCartItem(productId);
+        return;
+      }
+      if (newQty > prod.Stok) {
+        window.showToast('Jumlah tidak boleh melebihi stok (' + prod.Stok + ').', 'warning');
+        return;
+      }
+
+      item.Jumlah = newQty;
+      localStorage.setItem('bibit_cart', JSON.stringify(window.appState.cart));
+      window.updateCartBadge();
+      window.openCartDrawer(); // refresh
+
+      if (window.isGAS) {
+        google.script.run.syncCart(window.appState.authToken, window.appState.cart);
+      }
+    };
+
+    window.handleRemoveCartItem = function(productId) {
+      window.appState.cart = window.appState.cart.filter(c => c.Produk_ID !== productId);
+      localStorage.setItem('bibit_cart', JSON.stringify(window.appState.cart));
+      window.updateCartBadge();
+      window.openCartDrawer(); // refresh
+      window.showToast('Item berhasil dihapus dari keranjang.');
+
+      if (window.isGAS) {
+        google.script.run.syncCart(window.appState.authToken, window.appState.cart);
+      }
+    };
+
+    // 13. CHECKOUT & ORDERS (OPTIMISTIC BATCH)
+    // 13. PENGELOLAAN CHECKOUT, BELI LANGSUNG, ALAMAT & WHATSAPP
+    window.handleInstantBuy = function(productId) {
+      const prod = (window.appState.products || []).find(p => p.Produk_ID === productId);
+      if (!prod) {
+        window.showToast('Produk tidak ditemukan.', 'error');
+        return;
+      }
+      if (prod.Stok <= 0) {
+        window.showToast('Maaf, stok bibit ini sedang habis.', 'error');
+        return;
+      }
+
+      window.appState.isInstantCheckout = true;
+      window.appState.instantCheckoutItems = [{
+        Produk_ID: prod.Produk_ID,
+        Nama_Produk: prod.Nama_Produk,
+        Harga: Number(prod.Harga),
+        Foto_URL: prod.Foto_URL,
+        Jumlah: 1,
+        Stok: Number(prod.Stok)
+      }];
+
+      window.closeProductDetail();
+      window.closeGuestBuyModal();
+      window.openCheckoutModal(true);
+    };
+
+    window.askProductViaWhatsApp = function(productId) {
+      const prod = (window.appState.products || []).find(p => p.Produk_ID === productId);
+      if (!prod) return;
+      const msg = 'Halo Admin Bibitunggul.id, saya ingin bertanya tentang bibit *' + prod.Nama_Produk + '* (Rp ' + window.formatRupiah(prod.Harga) + '). Apakah stok bibit ini masih ready dan siap dikirim?';
+      window.open('https://wa.me/628813559211?text=' + encodeURIComponent(msg), '_blank');
+    };
+
+    window.openGuestBuyModal = function(productId) {
+      const prod = (window.appState.products || []).find(p => p.Produk_ID === productId);
+      if (!prod) return;
+      window.appState.guestBuyProduct = prod;
+      const nameEl = document.getElementById('guest-buy-product-name');
+      const priceEl = document.getElementById('guest-buy-product-price');
+      if (nameEl) nameEl.textContent = prod.Nama_Produk;
+      if (priceEl) priceEl.textContent = window.formatRupiah(prod.Harga);
+      const m = document.getElementById('modal-guest-buy');
+      if (m) m.classList.remove('hidden');
+    };
+
+    window.closeGuestBuyModal = function() {
+      const m = document.getElementById('modal-guest-buy');
+      if (m) m.classList.add('hidden');
+    };
+
+    window.openCheckoutModal = function(isInstant) {
+      window.appState.isInstantCheckout = !!isInstant;
+
+      if (!isInstant && (!window.appState.cart || window.appState.cart.length === 0)) {
+        window.showToast('Keranjang belanja Anda masih kosong!', 'warning');
+        return;
+      }
+
+      window.closeCartDrawer();
+
+      // Update badge label
+      const badge = document.getElementById('checkout-badge-type');
+      if (badge) {
+        badge.textContent = window.appState.isInstantCheckout ? '⚡ Beli Langsung' : 'Keranjang Belanja';
+      }
+
+      // Render daftar item bibit
+      window.renderCheckoutItems();
+
+      // Form Alamat Pengiriman
+      const user = window.appState.currentUser;
+      const nameInput = document.getElementById('checkout-name');
+      const phoneInput = document.getElementById('checkout-phone');
+      const addrInput = document.getElementById('checkout-address-detail');
+      const cityInput = document.getElementById('checkout-city');
+      const postalInput = document.getElementById('checkout-postal');
+      const savedSection = document.getElementById('checkout-saved-address-section');
+      const savedSelect = document.getElementById('checkout-saved-address-select');
+
+      if (user) {
+        if (nameInput && !nameInput.value) nameInput.value = user.Nama_Lengkap || '';
+        if (phoneInput && !phoneInput.value) phoneInput.value = user.No_HP || '';
+
+        const userAddrs = (window.appState.addresses || []).filter(a => a.User_ID === user.User_ID);
+        if (userAddrs.length > 0 && savedSection && savedSelect) {
+          savedSection.classList.remove('hidden');
+          savedSelect.innerHTML = '<option value="">-- Gunakan Alamat Tersimpan --</option>' +
+            userAddrs.map(function(a) {
+              return '<option value="' + a.Alamat_ID + '" ' + (a.Is_Default ? 'selected' : '') + '>' +
+                a.Nama_Penerima + ' - ' + a.Kota + ' (' + a.Alamat_Lengkap.substring(0, 32) + '...)' +
+              '</option>';
+            }).join('') +
+            '<option value="new">+ Ketik Alamat Pengiriman Baru</option>';
+
+          // Auto-fill alamat utama
+          const defAddr = userAddrs.find(a => a.Is_Default) || userAddrs[0];
+          if (defAddr) {
+            if (nameInput) nameInput.value = defAddr.Nama_Penerima || user.Nama_Lengkap;
+            if (phoneInput) phoneInput.value = defAddr.No_HP || user.No_HP;
+            if (addrInput) addrInput.value = defAddr.Alamat_Lengkap || '';
+            if (cityInput) cityInput.value = defAddr.Kota || '';
+            if (postalInput) postalInput.value = defAddr.Kode_Pos || '';
+          }
+        } else if (savedSection) {
+          savedSection.classList.add('hidden');
+        }
+      } else {
+        if (savedSection) savedSection.classList.add('hidden');
+      }
+
+      document.getElementById('modal-checkout').classList.remove('hidden');
+    };
+
+    window.closeCheckoutModal = function() {
+      const modal = document.getElementById('modal-checkout');
+      if (modal) modal.classList.add('hidden');
+    };
+
+    window.handleSelectSavedAddress = function(addressId) {
+      if (!addressId || addressId === 'new') {
+        const addrInput = document.getElementById('checkout-address-detail');
+        const cityInput = document.getElementById('checkout-city');
+        const postalInput = document.getElementById('checkout-postal');
+        if (addrInput) addrInput.value = '';
+        if (cityInput) cityInput.value = '';
+        if (postalInput) postalInput.value = '';
+        if (addrInput) addrInput.focus();
+        return;
+      }
+
+      const addr = (window.appState.addresses || []).find(a => a.Alamat_ID === addressId);
+      if (addr) {
+        const nameInput = document.getElementById('checkout-name');
+        const phoneInput = document.getElementById('checkout-phone');
+        const addrInput = document.getElementById('checkout-address-detail');
+        const cityInput = document.getElementById('checkout-city');
+        const postalInput = document.getElementById('checkout-postal');
+
+        if (nameInput) nameInput.value = addr.Nama_Penerima;
+        if (phoneInput) phoneInput.value = addr.No_HP;
+        if (addrInput) addrInput.value = addr.Alamat_Lengkap;
+        if (cityInput) cityInput.value = addr.Kota;
+        if (postalInput) postalInput.value = addr.Kode_Pos || '';
+      }
+    };
+
+    window.renderCheckoutItems = function() {
+      const listEl = document.getElementById('checkout-items-list');
+      if (!listEl) return;
+
+      let items = [];
+      if (window.appState.isInstantCheckout) {
+        items = window.appState.instantCheckoutItems || [];
+      } else {
+        items = (window.appState.cart || []).map(function(c) {
+          const prod = (window.appState.products || []).find(p => p.Produk_ID === c.Produk_ID);
+          return {
+            Produk_ID: c.Produk_ID,
+            Nama_Produk: prod ? prod.Nama_Produk : 'Bibit Tanaman',
+            Harga: prod ? Number(prod.Harga) : 0,
+            Foto_URL: prod ? prod.Foto_URL : '',
+            Jumlah: Number(c.Jumlah),
+            Stok: prod ? Number(prod.Stok) : 99
+          };
+        });
+      }
+
+      if (items.length === 0) {
+        listEl.innerHTML = '<p class="text-xs text-slate-400 py-3 text-center">Tidak ada bibit dalam pesanan.</p>';
+        document.getElementById('checkout-item-count').textContent = '0 bibit';
+        document.getElementById('checkout-grand-total').textContent = 'Rp 0';
+        return;
+      }
+
+      let totalQty = 0;
+      let grandTotal = 0;
+
+      listEl.innerHTML = items.map(function(it, idx) {
+        const subtotal = it.Harga * it.Jumlah;
+        totalQty += it.Jumlah;
+        grandTotal += subtotal;
+
+        return '<div class="flex items-center justify-between p-2.5 bg-white border border-slate-200 rounded-xl gap-3">' +
+          '<div class="flex items-center gap-2.5 min-w-0">' +
+            '<img src="' + it.Foto_URL + '" alt="' + it.Nama_Produk + '" class="w-12 h-12 rounded-lg object-cover bg-slate-100 shrink-0" onerror="this.src=\'https://images.unsplash.com/photo-1592150621744-aca64f48394a?w=100&q=80\'">' +
+            '<div class="min-w-0">' +
+              '<h5 class="font-bold text-xs text-slate-900 truncate">' + it.Nama_Produk + '</h5>' +
+              '<span class="text-[11px] font-extrabold text-brand-700">' + window.formatRupiah(it.Harga) + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="flex items-center gap-2 shrink-0">' +
+            '<div class="flex items-center border border-slate-300 rounded-lg overflow-hidden bg-slate-50">' +
+              '<button type="button" onclick="window.updateCheckoutItemQty(' + idx + ', -1)" class="w-6 h-6 flex items-center justify-center font-bold text-slate-600 hover:bg-slate-200 text-xs">-</button>' +
+              '<span class="w-7 text-center font-bold text-xs text-slate-800">' + it.Jumlah + '</span>' +
+              '<button type="button" onclick="window.updateCheckoutItemQty(' + idx + ', 1)" class="w-6 h-6 flex items-center justify-center font-bold text-slate-600 hover:bg-slate-200 text-xs">+</button>' +
+            '</div>' +
+            '<span class="font-extrabold text-xs text-slate-800 w-20 text-right">' + window.formatRupiah(subtotal) + '</span>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      document.getElementById('checkout-item-count').textContent = totalQty + ' bibit';
+      document.getElementById('checkout-grand-total').textContent = window.formatRupiah(grandTotal);
+    };
+
+    window.updateCheckoutItemQty = function(index, delta) {
+      if (window.appState.isInstantCheckout) {
+        const it = window.appState.instantCheckoutItems[0];
+        if (!it) return;
+        const newQty = it.Jumlah + delta;
+        if (newQty < 1) {
+          window.showToast('Jumlah pesanan minimal 1 bibit.', 'warning');
+          return;
+        }
+        if (newQty > it.Stok) {
+          window.showToast('Jumlah melebihi stok yang tersedia (' + it.Stok + ' bibit).', 'warning');
+          return;
+        }
+        it.Jumlah = newQty;
+        window.renderCheckoutItems();
+      } else {
+        const it = (window.appState.cart || [])[index];
+        if (!it) return;
+        window.updateCartQty(it.Produk_ID, delta);
+        window.renderCheckoutItems();
+      }
+    };
+
+    window.orderViaWhatsAppDirect = function() {
+      const name = (document.getElementById('checkout-name').value || '').trim();
+      const phone = (document.getElementById('checkout-phone').value || '').trim();
+      const addr = (document.getElementById('checkout-address-detail').value || '').trim();
+      const city = (document.getElementById('checkout-city').value || '').trim();
+      const postal = (document.getElementById('checkout-postal').value || '').trim();
+
+      const metodeRadio = document.querySelector('input[name="checkout-payment-method"]:checked');
+      const metodeBayar = metodeRadio && metodeRadio.value === 'bayar di tempat' ? 'Bayar di Tempat (COD)' : 'Transfer Bank Mandiri';
+
+      let items = [];
+      if (window.appState.isInstantCheckout) {
+        items = window.appState.instantCheckoutItems || [];
+      } else {
+        items = (window.appState.cart || []).map(function(c) {
+          const prod = (window.appState.products || []).find(p => p.Produk_ID === c.Produk_ID);
+          return {
+            Nama_Produk: prod ? prod.Nama_Produk : 'Bibit Tanaman',
+            Harga: prod ? Number(prod.Harga) : 0,
+            Jumlah: Number(c.Jumlah)
+          };
+        });
+      }
+
+      if (items.length === 0) {
+        window.showToast('Pilih bibit yang ingin dipesan terlebih dahulu!', 'warning');
+        return;
+      }
+
+      let grandTotal = 0;
+      const orderListText = items.map(function(it, i) {
+        const sub = it.Harga * it.Jumlah;
+        grandTotal += sub;
+        return (i + 1) + '. *' + it.Nama_Produk + '* x ' + it.Jumlah + ' bibit = ' + window.formatRupiah(sub);
+      }).join('\n');
+
+      let msg = 'Halo Admin Bibitunggul.id, saya ingin memesan bibit:\n\n' +
+        '🌱 *DAFTAR BIBIT:*\n' + orderListText + '\n\n' +
+        '💰 *TOTAL BIAYA:* ' + window.formatRupiah(grandTotal) + '\n' +
+        '💳 *METODE PEMBAYARAN:* ' + metodeBayar + '\n\n' +
+        '📍 *DATA PENGIRIMAN:*\n' +
+        '• Nama Penerima: ' + (name || '[Belum diisi]') + '\n' +
+        '• No. WhatsApp: ' + (phone || '[Belum diisi]') + '\n' +
+        '• Alamat: ' + (addr || '[Belum diisi]') + '\n' +
+        '• Kota: ' + (city || '[Belum diisi]') + (postal ? ' ' + postal : '') + '\n\n' +
+        'Mohon info nomor rekening Mandiri & estimasi pengiriman bibit. Terima kasih!';
+
+      window.open('https://wa.me/628813559211?text=' + encodeURIComponent(msg), '_blank');
+      window.closeCheckoutModal();
+      window.showToast('Membuka WhatsApp Admin Bibitunggul.id...', 'success');
+    };
+
+    window.handleProcessCheckout = function(event) {
+      event.preventDefault();
+
+      const name = (document.getElementById('checkout-name').value || '').trim();
+      const phone = (document.getElementById('checkout-phone').value || '').trim();
+      const addr = (document.getElementById('checkout-address-detail').value || '').trim();
+      const city = (document.getElementById('checkout-city').value || '').trim();
+      const postal = (document.getElementById('checkout-postal').value || '').trim();
+
+      if (!name || !phone || !addr || !city) {
+        window.showToast('Harap lengkapi nama penerima, nomor WhatsApp, dan alamat pengiriman!', 'warning');
+        return;
+      }
+
+      const metodeRadio = document.querySelector('input[name="checkout-payment-method"]:checked');
+      const metodeBayar = metodeRadio ? metodeRadio.value : 'transfer';
+
+      // 1. Pastikan profil pengguna tersedia (jika tamu, auto-register 0ms)
+      if (!window.appState.currentUser) {
+        const cleanPhone = phone.replace(/[^0-9]/g, '');
+        const guestId = 'USR-' + new Date().getTime();
+        const guestUser = {
+          User_ID: guestId,
+          Username: 'pelanggan_' + (cleanPhone.slice(-4) || '999'),
+          Nama_Lengkap: name,
+          Email: 'pelanggan' + (cleanPhone.slice(-4) || '999') + '@bibitunggul.id',
+          No_HP: phone,
+          Role: 'Pelanggan',
+          Status: true,
+          Tanggal_Daftar: new Date().toISOString().replace('T', ' ').substring(0, 19)
+        };
+        window.appState.users.push(guestUser);
+        window.appState.currentUser = guestUser;
+        window.appState.authToken = 'TOKEN_' + guestId;
+        localStorage.setItem('bibit_user', JSON.stringify(guestUser));
+        window.updateAuthUI();
+      }
+
+      const currentUserId = window.appState.currentUser.User_ID;
+
+      // 2. Simpan Alamat Pengiriman
+      const newAddressId = 'ALM-' + new Date().getTime();
+      const newAddressObj = {
+        Alamat_ID: newAddressId,
+        User_ID: currentUserId,
+        Nama_Penerima: name,
+        No_HP: phone,
+        Alamat_Lengkap: addr,
+        Kota: city,
+        Kode_Pos: postal,
+        Is_Default: true
+      };
+      window.appState.addresses.push(newAddressObj);
+
+      // 3. Siapkan items pesanan
+      let orderItems = [];
+      if (window.appState.isInstantCheckout) {
+        orderItems = (window.appState.instantCheckoutItems || []).map(function(it) {
+          return { Produk_ID: it.Produk_ID, Jumlah: it.Jumlah };
+        });
+      } else {
+        orderItems = (window.appState.cart || []).map(function(c) {
+          return { Produk_ID: c.Produk_ID, Jumlah: c.Jumlah };
+        });
+      }
+
+      if (orderItems.length === 0) {
+        window.showToast('Item pesanan kosong!', 'warning');
+        return;
+      }
+
+      const payload = {
+        items: orderItems,
+        Alamat_ID: newAddressId,
+        Alamat_Baru: newAddressObj,
+        Metode_Bayar: metodeBayar
+      };
+
+      const btn = document.getElementById('btn-submit-order');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="inline-block animate-spin mr-2">⏳</span> Memproses Pesanan...';
+
+      if (window.isGAS) {
+        // LIVE SINKRONISASI GOOGLE APPS SCRIPT
+        google.script.run
+          .withSuccessHandler(function(res) {
+            btn.disabled = false;
+            btn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> <span>Konfirmasi & Buat Pesanan</span>';
+            if (res && res.success) {
+              if (window.appState.isInstantCheckout) {
+                window.appState.instantCheckoutItems = [];
+              } else {
+                window.appState.cart = [];
+                localStorage.removeItem('bibit_cart');
+                window.updateCartBadge();
+              }
+              window.closeCheckoutModal();
+              window.showToast(res.message, 'success');
+              window.navigateTo('my-orders');
+              if (metodeBayar === 'transfer') {
+                window.openPaymentInstructionsModal(res.orderNumber, res.total);
+              }
+            } else {
+              window.showToast((res && res.message) || 'Gagal memproses pesanan.', 'error');
+            }
+          })
+          .withFailureHandler(function(err) {
+            btn.disabled = false;
+            btn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> <span>Konfirmasi & Buat Pesanan</span>';
+            window.showToast('Error koneksi: ' + err.toString(), 'error');
+          })
+          .checkoutOrder(window.appState.authToken, payload);
+      } else {
+        // MOCK MODE (0ms INSTANT UX)
+        const orderId = 'ORD-' + new Date().getTime();
+        const rand = Math.floor(1000 + Math.random() * 9000);
+        const orderNo = 'ORD-20261105-' + rand;
+        let calculatedTotal = 0;
+
+        orderItems.forEach(function(item) {
+          const prod = (window.appState.products || []).find(p => p.Produk_ID === item.Produk_ID);
+          if (prod) {
+            const subtotal = Number(prod.Harga) * item.Jumlah;
+            calculatedTotal += subtotal;
+            prod.Stok = Math.max(0, Number(prod.Stok) - item.Jumlah);
+
+            window.appState.orderDetails.push({
+              Detail_ID: 'DTL-' + new Date().getTime() + Math.random(),
+              Pesanan_ID: orderId,
+              Produk_ID: item.Produk_ID,
+              Nama_Produk: prod.Nama_Produk,
+              Harga: prod.Harga,
+              Jumlah: item.Jumlah,
+              Subtotal: subtotal
+            });
+          }
+        });
+
+        window.appState.orders.unshift({
+          Pesanan_ID: orderId,
+          No_Pesanan: orderNo,
+          User_ID: currentUserId,
+          Alamat_ID: newAddressId,
+          Total: calculatedTotal,
+          Metode_Bayar: metodeBayar,
+          Status: 'Menunggu Pembayaran',
+          Tanggal: new Date().toISOString().replace('T', ' ').substring(0, 19)
+        });
+
+        if (window.appState.isInstantCheckout) {
+          window.appState.instantCheckoutItems = [];
+        } else {
+          window.appState.cart = [];
+          localStorage.removeItem('bibit_cart');
+          window.updateCartBadge();
+        }
+
+        window.saveMockDatabase();
+        window.renderCatalog();
+
+        setTimeout(function() {
+          btn.disabled = false;
+          btn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> <span>Konfirmasi & Buat Pesanan</span>';
+          window.closeCheckoutModal();
+          window.showToast('Pesanan #' + orderNo + ' berhasil dibuat!', 'success');
+          window.navigateTo('my-orders');
+
+          if (metodeBayar === 'transfer') {
+            window.openPaymentInstructionsModal(orderNo, calculatedTotal);
+          }
+        }, 300);
+      }
+    };
+
+    window.renderMyOrders = function() {
+      const container = document.getElementById('my-orders-list');
+      if (!container) return;
+
+      const myOrders = window.appState.orders.filter(o => o.User_ID === window.appState.currentUser.User_ID);
+
+      if (myOrders.length === 0) {
+        container.innerHTML = '<div class="bg-white p-12 text-center rounded-3xl border border-slate-200">' +
+          '<p class="text-slate-400 text-sm">Anda belum memiliki riwayat pesanan.</p>' +
+          '<button onclick="window.navigateTo(\'katalog\')" class="mt-3 px-4 py-2 bg-brand-700 text-white font-bold text-xs rounded-xl">Mulai Belanja Bibit</button>' +
+        '</div>';
+        return;
+      }
+
+      const statusBadges = {
+        'Menunggu Pembayaran': 'bg-amber-100 text-amber-800 border-amber-200',
+        'Dibayar': 'bg-blue-100 text-blue-800 border-blue-200',
+        'Diproses': 'bg-indigo-100 text-indigo-800 border-indigo-200',
+        'Dikirim': 'bg-sky-100 text-sky-800 border-sky-200',
+        'Selesai': 'bg-emerald-100 text-emerald-800 border-emerald-200',
+        'Dibatalkan': 'bg-rose-100 text-rose-800 border-rose-200'
+      };
+
+      container.innerHTML = myOrders.map(function(order) {
+        const details = window.appState.orderDetails.filter(d => d.Pesanan_ID === order.Pesanan_ID);
+        const canCancel = order.Status === 'Menunggu Pembayaran';
+
+        return '<div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-4">' +
+          '<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-slate-100 gap-2">' +
+            '<div>' +
+              '<span class="text-xs font-mono font-bold text-slate-800">' + order.No_Pesanan + '</span>' +
+              '<span class="text-xs text-slate-400 ml-2">(' + order.Tanggal + ')</span>' +
+            '</div>' +
+            '<div class="flex items-center gap-2">' +
+              '<span class="px-3 py-1 rounded-full text-xs font-bold border ' + (statusBadges[order.Status] || 'bg-slate-100 text-slate-700') + '">' + order.Status + '</span>' +
+              '<span class="text-xs uppercase font-bold text-slate-400">[' + order.Metode_Bayar + ']</span>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="space-y-2">' +
+            details.map(function(d) {
+              return '<div class="flex items-center justify-between text-xs py-1">' +
+                '<span class="text-slate-700 font-semibold">' + d.Nama_Produk + ' <b class="text-slate-400">x ' + d.Jumlah + '</b></span>' +
+                '<span class="text-slate-900 font-bold">' + window.formatRupiah(d.Subtotal) + '</span>' +
+              '</div>';
+            }).join('') +
+          '</div>' +
+
+          '<div class="pt-3 border-t border-slate-100 flex items-center justify-between flex-wrap gap-2">' +
+            '<div>' +
+              '<span class="text-[11px] text-slate-400 block font-medium">Total Pembayaran</span>' +
+              '<span class="text-base font-extrabold text-brand-700">' + window.formatRupiah(order.Total) + '</span>' +
+            '</div>' +
+            '<div class="flex items-center gap-2 flex-wrap">' +
+              (order.Status === 'Menunggu Pembayaran' && order.Metode_Bayar === 'transfer' ? '<button onclick="window.openPaymentInstructionsModal(\'' + order.No_Pesanan + '\', ' + order.Total + ')" class="px-3 py-1.5 text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white rounded-xl shadow-xs flex items-center gap-1.5"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg> Rekening & Konfirmasi</button>' : '') +
+              (canCancel ? '<button onclick="window.handleCancelOrder(\'' + order.Pesanan_ID + '\')" class="px-3.5 py-1.5 text-xs font-bold bg-rose-50 text-rose-700 hover:bg-rose-100 rounded-xl">Batalkan Pesanan</button>' : '') +
+              (order.Status === 'Selesai' ? '<button onclick="window.openProductDetailModal(\'' + (details[0] ? details[0].Produk_ID : '') + '\')" class="px-3.5 py-1.5 text-xs font-bold bg-brand-50 text-brand-700 hover:bg-brand-100 rounded-xl">Beri Ulasan Bibit</button>' : '') +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    };
+
+    window.handleCancelOrder = function(orderId) {
+      if (!confirm('Apakah Anda yakin ingin membatalkan pesanan ini? Stok bibit akan dikembalikan.')) return;
+
+      if (window.isGAS) {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (res && res.success) {
+              window.showToast(res.message, 'success');
+              window.initApplication();
+            } else {
+              window.showToast((res && res.message) || 'Gagal membatalkan.', 'error');
+            }
+          })
+          .cancelOrder(window.appState.authToken, orderId);
+      } else {
+        const order = window.appState.orders.find(o => o.Pesanan_ID === orderId);
+        if (order) {
+          order.Status = 'Dibatalkan';
+          // Kembalikan stok
+          const details = window.appState.orderDetails.filter(d => d.Pesanan_ID === orderId);
+          details.forEach(function(d) {
+            const prod = window.appState.products.find(p => p.Produk_ID === d.Produk_ID);
+            if (prod) prod.Stok += d.Jumlah;
+          });
+          window.saveMockDatabase();
+          window.showToast('Pesanan berhasil dibatalkan dan stok telah dikembalikan.', 'success');
+          window.renderMyOrders();
+        }
+      }
+    };
+
+    // 15. ALAMAT PENGGUNA (CUSTOMER)
+    window.renderMyAddresses = function() {
+      const container = document.getElementById('my-addresses-list');
+      if (!container) return;
+
+      const userAddrs = window.appState.addresses.filter(a => a.User_ID === window.appState.currentUser.User_ID);
+      if (userAddrs.length === 0) {
+        container.innerHTML = '<div class="col-span-2 text-center py-8"><p class="text-xs text-slate-400">Belum ada alamat tersimpan.</p></div>';
+        return;
+      }
+
+      container.innerHTML = userAddrs.map(function(a) {
+        return '<div class="p-5 bg-white border ' + (a.Is_Default ? 'border-brand-600 bg-brand-50/20 shadow-xs' : 'border-slate-200') + ' rounded-3xl relative">' +
+          '<div class="flex items-center justify-between mb-2">' +
+            '<h4 class="font-bold text-slate-800 text-sm">' + a.Nama_Penerima + '</h4>' +
+            (a.Is_Default ? '<span class="px-2 py-0.5 bg-brand-100 text-brand-800 text-[10px] font-bold rounded-md">Alamat Utama</span>' : '') +
+          '</div>' +
+          '<p class="text-xs text-slate-600 mb-1">' + a.No_HP + '</p>' +
+          '<p class="text-xs text-slate-500 leading-relaxed mb-4">' + a.Alamat_Lengkap + ', ' + a.Kota + ' ' + a.Kode_Pos + '</p>' +
+          '<div class="flex gap-2">' +
+            '<button onclick="window.editAddress(\'' + a.Alamat_ID + '\')" class="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg">Edit</button>' +
+            '<button onclick="window.handleDeleteAddress(\'' + a.Alamat_ID + '\')" class="px-3 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold rounded-lg">Hapus</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    };
+
+    window.openAddressModal = function() {
+      document.getElementById('form-address').reset();
+      document.getElementById('addr-id').value = '';
+      document.getElementById('modal-address-title').textContent = 'Tambah Alamat Baru';
+      document.getElementById('modal-address-form').classList.remove('hidden');
+    };
+
+    window.closeAddressModal = function() {
+      document.getElementById('modal-address-form').classList.add('hidden');
+    };
+
+    window.editAddress = function(addrId) {
+      const a = window.appState.addresses.find(item => item.Alamat_ID === addrId);
+      if (!a) return;
+      document.getElementById('addr-id').value = a.Alamat_ID;
+      document.getElementById('addr-nama').value = a.Nama_Penerima;
+      document.getElementById('addr-nohp').value = a.No_HP;
+      document.getElementById('addr-lengkap').value = a.Alamat_Lengkap;
+      document.getElementById('addr-kota').value = a.Kota;
+      document.getElementById('addr-kodepos').value = a.Kode_Pos;
+      document.getElementById('addr-default').checked = a.Is_Default;
+      document.getElementById('modal-address-title').textContent = 'Ubah Alamat Pengiriman';
+      document.getElementById('modal-address-form').classList.remove('hidden');
+    };
+
+    window.handleSaveAddress = function(event) {
+      event.preventDefault();
+      const addrId = document.getElementById('addr-id').value;
+      const isDefault = document.getElementById('addr-default').checked;
+
+      const payload = {
+        Alamat_ID: addrId || ('ALM-' + new Date().getTime()),
+        User_ID: window.appState.currentUser.User_ID,
+        Nama_Penerima: document.getElementById('addr-nama').value,
+        No_HP: document.getElementById('addr-nohp').value,
+        Alamat_Lengkap: document.getElementById('addr-lengkap').value,
+        Kota: document.getElementById('addr-kota').value,
+        Kode_Pos: document.getElementById('addr-kodepos').value,
+        Is_Default: isDefault
+      };
+
+      if (isDefault) {
+        window.appState.addresses.forEach(a => { if (a.User_ID === window.appState.currentUser.User_ID) a.Is_Default = false; });
+      }
+
+      if (addrId) {
+        const idx = window.appState.addresses.findIndex(a => a.Alamat_ID === addrId);
+        if (idx !== -1) window.appState.addresses[idx] = payload;
+      } else {
+        window.appState.addresses.push(payload);
+      }
+
+      window.saveMockDatabase();
+      window.closeAddressModal();
+      window.renderMyAddresses();
+      window.showToast('Alamat berhasil disimpan.', 'success');
+
+      if (window.isGAS) {
+        google.script.run.saveAddress(window.appState.authToken, payload);
+      }
+    };
+
+    window.handleDeleteAddress = function(addrId) {
+      if (!confirm('Hapus alamat ini?')) return;
+      window.appState.addresses = window.appState.addresses.filter(a => a.Alamat_ID !== addrId);
+      window.saveMockDatabase();
+      window.renderMyAddresses();
+      window.showToast('Alamat telah dihapus.');
+    };
+
+    // 16. ULASAN PRODUK FORM
+    window.triggerReviewForm = function() {
+      const prod = window.appState.currentSelectedProduct;
+      if (!prod) return;
+      document.getElementById('rev-product-id').value = prod.Produk_ID;
+      document.getElementById('review-product-name').textContent = prod.Nama_Produk;
+      document.getElementById('form-review').reset();
+      document.getElementById('modal-review-form').classList.remove('hidden');
+    };
+
+    window.closeReviewModal = function() {
+      document.getElementById('modal-review-form').classList.add('hidden');
+    };
+
+    window.handleSubmitReview = function(event) {
+      event.preventDefault();
+      const prodId = document.getElementById('rev-product-id').value;
+      const rating = document.getElementById('rev-rating').value;
+      const komentar = document.getElementById('rev-komentar').value;
+
+      const payload = {
+        Ulasan_ID: 'REV-' + new Date().getTime(),
+        Produk_ID: prodId,
+        User_ID: window.appState.currentUser.User_ID,
+        Rating: Number(rating),
+        Komentar: komentar,
+        Tanggal: new Date().toISOString().substring(0, 10)
+      };
+
+      window.appState.reviews.unshift(payload);
+      window.saveMockDatabase();
+      window.closeReviewModal();
+      window.showToast('Terima kasih! Ulasan Anda telah diterbitkan.', 'success');
+      window.openProductDetailModal(prodId); // Refresh detail
+
+      if (window.isGAS) {
+        google.script.run.submitReview(window.appState.authToken, payload);
+      }
+    };
+
+    // 17. AUTHENTICATION (LOGIN, REGISTER, LOGOUT)
+    window.handleLogin = function(event) {
+      event.preventDefault();
+      const u = document.getElementById('login-username').value.trim();
+      const p = document.getElementById('login-password').value.trim();
+
+      const btn = document.getElementById('btn-login-submit');
+      btn.disabled = true;
+      btn.innerHTML = '<span>Memverifikasi Akun...</span>';
+
+      if (window.isGAS) {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            btn.disabled = false;
+            btn.innerHTML = '<span>Masuk Sekarang</span>';
+            if (res && res.success) {
+              window.appState.currentUser = res.user;
+              window.appState.authToken = res.token;
+              window.appState.isAuth = true;
+              localStorage.setItem('bibit_user', JSON.stringify(res.user));
+              localStorage.setItem('bibit_token', res.token);
+              window.updateAuthUI();
+              window.showToast(res.message, 'success');
+              if (res.user.Role === 'Admin') {
+                window.navigateTo('admin');
+              } else {
+                window.navigateTo('home');
+              }
+            } else {
+              window.showToast((res && res.message) || 'Username atau Password salah.', 'error');
+            }
+          })
+          .withFailureHandler(function(err) {
+            btn.disabled = false;
+            btn.innerHTML = '<span>Masuk Sekarang</span>';
+            window.showToast('Gagal terhubung ke server GAS: ' + err.toString(), 'error');
+          })
+          .login({ username: u, password: p });
+      } else {
+        // MOCK AUTH
+        setTimeout(function() {
+          btn.disabled = false;
+          btn.innerHTML = '<span>Masuk Sekarang</span>';
+          const found = window.appState.users.find(user => user.Username.toLowerCase() === u.toLowerCase());
+
+          if (found && (p === 'das12345' || p === 'password')) {
+            if (!found.Status) {
+              window.showToast('Akun ini telah dinonaktifkan oleh Admin.', 'error');
+              return;
+            }
+            window.appState.currentUser = found;
+            window.appState.authToken = 'MOCK_TOKEN_' + found.User_ID;
+            window.appState.isAuth = true;
+            localStorage.setItem('bibit_user', JSON.stringify(found));
+            localStorage.setItem('bibit_token', window.appState.authToken);
+            window.updateAuthUI();
+            window.showToast('Selamat datang kembali, ' + found.Nama_Lengkap, 'success');
+
+            if (found.Role === 'Admin') {
+              window.navigateTo('admin');
+            } else {
+              window.navigateTo('home');
+            }
+          } else {
+            window.showToast('Username atau Password demo salah. Gunakan admin/das12345 atau pelanggan/das12345', 'error');
+          }
+        }, 300);
+      }
+    };
+
+    window.handleRegister = function(event) {
+      event.preventDefault();
+      const nama = document.getElementById('reg-nama').value.trim();
+      const u = document.getElementById('reg-username').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const nohp = document.getElementById('reg-nohp').value.trim();
+      const pass = document.getElementById('reg-password').value.trim();
+
+      const btn = document.getElementById('btn-register-submit');
+      btn.disabled = true;
+      btn.innerHTML = '<span>Mendaftarkan...</span>';
+
+      if (window.isGAS) {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            btn.disabled = false;
+            btn.innerHTML = '<span>Daftar Sekarang</span>';
+            if (res && res.success) {
+              window.appState.currentUser = res.user;
+              window.appState.authToken = res.token;
+              window.appState.isAuth = true;
+              localStorage.setItem('bibit_user', JSON.stringify(res.user));
+              localStorage.setItem('bibit_token', res.token);
+              window.updateAuthUI();
+              window.showToast(res.message, 'success');
+              window.navigateTo('home');
+            } else {
+              window.showToast((res && res.message) || 'Registrasi gagal.', 'error');
+            }
+          })
+          .register({ nama: nama, username: u, email: email, noHp: nohp, password: pass });
+      } else {
+        setTimeout(function() {
+          btn.disabled = false;
+          btn.innerHTML = '<span>Daftar Sekarang</span>';
+          if (window.appState.users.some(usr => usr.Username.toLowerCase() === u.toLowerCase())) {
+            window.showToast('Username sudah dipakai.', 'error');
+            return;
+          }
+          const newUser = {
+            User_ID: 'USR-' + new Date().getTime(),
+            Username: u,
+            Nama_Lengkap: nama,
+            Email: email,
+            No_HP: nohp,
+            Role: 'Pelanggan',
+            Status: true,
+            Tanggal_Daftar: new Date().toISOString().substring(0, 10)
+          };
+          window.appState.users.push(newUser);
+          window.saveMockDatabase();
+          window.appState.currentUser = newUser;
+          window.appState.authToken = 'MOCK_' + newUser.User_ID;
+          window.appState.isAuth = true;
+          localStorage.setItem('bibit_user', JSON.stringify(newUser));
+          localStorage.setItem('bibit_token', window.appState.authToken);
+          window.updateAuthUI();
+          window.showToast('Registrasi berhasil! Selamat berbelanja bibit unggul.', 'success');
+          window.navigateTo('home');
+        }, 300);
+      }
+    };
+
+    window.handleLogout = function() {
+      window.appState.currentUser = null;
+      window.appState.authToken = null;
+      window.appState.isAuth = false;
+      window.appState.cart = [];
+      localStorage.removeItem('bibit_user');
+      localStorage.removeItem('bibit_token');
+      localStorage.removeItem('bibit_cart');
+      window.updateAuthUI();
+      window.updateCartBadge();
+      window.showToast('Anda telah berhasil keluar (logout).');
+      window.navigateTo('home');
+    };
+
+    window.updateAuthUI = function() {
+      const container = document.getElementById('nav-auth-container');
+      const mobileLabel = document.getElementById('mobile-user-label');
+      if (!container) return;
+
+      if (window.appState.isAuth) {
+        const u = window.appState.currentUser;
+        if (mobileLabel) mobileLabel.textContent = u.Nama_Lengkap.split(' ')[0];
+
+        if (u.Role === 'Admin') {
+          container.innerHTML = '<button onclick="window.navigateTo(\'admin\')" class="px-3.5 py-1.5 rounded-xl bg-brand-700 text-white font-bold text-xs shadow-xs hover:bg-brand-800 flex items-center gap-1.5">' +
+            '<span class="w-2 h-2 rounded-full bg-accent-400 animate-ping"></span> Portal Admin' +
+          '</button>' +
+          '<button onclick="window.handleLogout()" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-slate-100" title="Keluar">' +
+            '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>' +
+          '</button>';
+        } else {
+          // Customer Dropdown / Links
+          container.innerHTML = '<div class="flex items-center gap-2">' +
+            '<button onclick="window.navigateTo(\'my-orders\')" class="px-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-brand-700 hover:bg-slate-100 rounded-lg hidden sm:block">Pesanan Saya</button>' +
+            '<button onclick="window.navigateTo(\'my-addresses\')" class="px-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-brand-700 hover:bg-slate-100 rounded-lg hidden sm:block">Alamat</button>' +
+            '<button onclick="window.navigateTo(\'my-profile\')" class="flex items-center gap-2 px-3 py-1.5 bg-slate-100 rounded-xl hover:bg-slate-200 transition-colors">' +
+              '<div class="w-6 h-6 rounded-full bg-brand-700 text-white text-[10px] font-bold flex items-center justify-center">' + u.Nama_Lengkap.charAt(0) + '</div>' +
+              '<span class="text-xs font-bold text-slate-800">' + u.Nama_Lengkap.split(' ')[0] + '</span>' +
+            '</button>' +
+          '</div>';
+
+          // Set Profile values
+          const pNama = document.getElementById('prof-nama');
+          const pUser = document.getElementById('prof-username');
+          const pEmail = document.getElementById('prof-email');
+          const pNohp = document.getElementById('prof-nohp');
+          if (pNama) pNama.value = u.Nama_Lengkap;
+          if (pUser) pUser.value = u.Username;
+          if (pEmail) pEmail.value = u.Email;
+          if (pNohp) pNohp.value = u.No_HP;
+        }
+      } else {
+        if (mobileLabel) mobileLabel.textContent = 'Akun';
+        container.innerHTML = '<button onclick="window.navigateTo(\'login\')" class="px-3.5 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100">Masuk</button>' +
+          '<button onclick="window.navigateTo(\'register\')" class="px-3.5 py-1.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white text-xs font-bold shadow-xs">Daftar</button>';
+      }
+    };
+
+    window.handleMobileAccountClick = function() {
+      if (!window.appState.isAuth) {
+        window.navigateTo('login');
+      } else if (window.appState.currentUser.Role === 'Admin') {
+        window.navigateTo('admin');
+      } else {
+        window.navigateTo('my-orders');
+      }
+    };
+
+    // 18. ADMIN PORTAL (DASHBOARD, PRODUK, KATEGORI, PESANAN, PENGGUNA, LAPORAN)
+    window.switchAdminTab = function(tabName) {
+      document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+        if (btn.dataset.tab === tabName) {
+          btn.classList.add('bg-brand-700', 'text-white');
+          btn.classList.remove('text-slate-600', 'hover:bg-slate-100');
+        } else {
+          btn.classList.remove('bg-brand-700', 'text-white');
+          btn.classList.add('text-slate-600', 'hover:bg-slate-100');
+        }
+      });
+      document.querySelectorAll('.admin-subtab').forEach(el => el.classList.add('hidden'));
+
+      const activeEl = document.getElementById('admin-tab-' + tabName);
+      if (activeEl) activeEl.classList.remove('hidden');
+
+      if (tabName === 'dashboard') window.renderAdminDashboard();
+      if (tabName === 'produk') window.renderAdminProducts();
+      if (tabName === 'kategori') window.renderAdminCategories();
+      if (tabName === 'pesanan') window.renderAdminOrders();
+      if (tabName === 'pengguna') window.renderAdminUsers();
+      if (tabName === 'laporan') window.renderAdminReports();
+    };
+
+    let orderChartInstance = null;
+    window.renderAdminDashboard = function() {
+      // Metrik Statistik
+      const completedOrders = window.appState.orders.filter(o => o.Status === 'Selesai');
+      const totalOmset = completedOrders.reduce((sum, o) => sum + Number(o.Total), 0);
+      const pendingOrders = window.appState.orders.filter(o => o.Status === 'Menunggu Pembayaran').length;
+      const lowStockProds = window.appState.products.filter(p => p.Stok <= 5);
+      const activeProds = window.appState.products.filter(p => p.Status === true || p.Status === 'true').length;
+
+      document.getElementById('stat-total-sales').textContent = window.formatRupiah(totalOmset);
+      document.getElementById('stat-pending-orders').textContent = pendingOrders;
+      document.getElementById('stat-low-stock').textContent = lowStockProds.length;
+      document.getElementById('stat-active-products').textContent = activeProds;
+
+      // Low Stock List
+      const lowList = document.getElementById('admin-low-stock-list');
+      if (lowList) {
+        if (lowStockProds.length === 0) {
+          lowList.innerHTML = '<p class="text-xs text-slate-400">Seluruh stok bibit aman.</p>';
+        } else {
+          lowList.innerHTML = lowStockProds.map(p => {
+            return '<div class="flex items-center justify-between p-2.5 bg-rose-50 border border-rose-100 rounded-xl text-xs">' +
+              '<span class="font-bold text-slate-800 line-clamp-1">' + p.Nama_Produk + '</span>' +
+              '<span class="px-2 py-0.5 bg-rose-600 text-white font-extrabold rounded-md">' + p.Stok + ' Tersisa</span>' +
+            '</div>';
+          }).join('');
+        }
+      }
+
+      // Chart.js render safely
+      try {
+        const ctx = document.getElementById('adminOrderChart');
+        if (ctx) {
+          const statuses = ['Menunggu Pembayaran', 'Dibayar', 'Diproses', 'Dikirim', 'Selesai', 'Dibatalkan'];
+          const counts = statuses.map(s => window.appState.orders.filter(o => o.Status === s).length);
+
+          if (orderChartInstance) orderChartInstance.destroy();
+
+          orderChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: statuses,
+              datasets: [{
+                label: 'Jumlah Transaksi',
+                data: counts,
+                backgroundColor: ['#f59e0b', '#3b82f6', '#6366f1', '#0ea5e9', '#15803d', '#f43f5e'],
+                borderRadius: 8
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+            }
+          });
+        }
+      } catch(err) {
+        console.warn('Init Chart Error:', err);
+      }
+    };
+
+    window.renderAdminProducts = function() {
+      const q = (document.getElementById('admin-prod-search').value || '').toLowerCase();
+      const tbody = document.getElementById('admin-products-table-body');
+      if (!tbody) return;
+
+      const prods = window.appState.products.filter(p => !q || p.Nama_Produk.toLowerCase().includes(q));
+
+      tbody.innerHTML = prods.map(p => {
+        const cat = window.appState.categories.find(c => c.Kategori_ID === p.Kategori_ID);
+        const isActive = p.Status === true || p.Status === 'true';
+
+        return '<tr class="hover:bg-slate-50 transition-colors">' +
+          '<td class="p-3.5 flex items-center gap-3">' +
+            '<img src="' + p.Foto_URL + '" class="w-10 h-10 object-cover rounded-xl shrink-0">' +
+            '<div>' +
+              '<span class="font-bold text-slate-800 block line-clamp-1">' + p.Nama_Produk + '</span>' +
+              '<span class="text-[10px] text-slate-400 font-mono">' + p.Produk_ID + '</span>' +
+            '</div>' +
+          '</td>' +
+          '<td class="p-3.5 text-xs text-slate-600">' + (cat ? cat.Nama_Kategori : '-') + '</td>' +
+          '<td class="p-3.5 text-xs font-bold text-brand-700">' + window.formatRupiah(p.Harga) + '</td>' +
+          '<td class="p-3.5 text-xs font-extrabold ' + (p.Stok <= 5 ? 'text-rose-600' : 'text-slate-800') + '">' + p.Stok + '</td>' +
+          '<td class="p-3.5"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ' + (isActive ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600') + '">' + (isActive ? 'Aktif' : 'Nonaktif') + '</span></td>' +
+          '<td class="p-3.5 text-right space-x-1">' +
+            '<button onclick="window.editProduct(\'' + p.Produk_ID + '\')" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg">Edit</button>' +
+            '<button onclick="window.handleToggleProductStatus(\'' + p.Produk_ID + '\')" class="px-2.5 py-1 ' + (isActive ? 'bg-rose-50 text-rose-700 hover:bg-rose-100' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100') + ' text-xs font-bold rounded-lg">' + (isActive ? 'Nonaktifkan' : 'Aktifkan') + '</button>' +
+          '</td>' +
+        '</tr>';
+      }).join('');
+    };
+
+    window.openProductFormModal = function() {
+      document.getElementById('form-admin-product').reset();
+      document.getElementById('adm-prod-id').value = '';
+      document.getElementById('modal-product-form-title').textContent = 'Tambah Bibit Baru';
+
+      // Populate Category Options
+      const sel = document.getElementById('adm-prod-category');
+      sel.innerHTML = window.appState.categories.map(c => '<option value="' + c.Kategori_ID + '">' + c.Nama_Kategori + '</option>').join('');
+
+      document.getElementById('modal-product-form').classList.remove('hidden');
+    };
+
+    window.closeProductFormModal = function() {
+      document.getElementById('modal-product-form').classList.add('hidden');
+    };
+
+    window.editProduct = function(pId) {
+      const p = window.appState.products.find(item => item.Produk_ID === pId);
+      if (!p) return;
+      window.openProductFormModal();
+      document.getElementById('adm-prod-id').value = p.Produk_ID;
+      document.getElementById('adm-prod-name').value = p.Nama_Produk;
+      document.getElementById('adm-prod-category').value = p.Kategori_ID;
+      document.getElementById('adm-prod-price').value = p.Harga;
+      document.getElementById('adm-prod-stock').value = p.Stok;
+      document.getElementById('adm-prod-photo').value = p.Foto_URL;
+      document.getElementById('adm-prod-desc').value = p.Deskripsi;
+      document.getElementById('adm-prod-status').value = String(p.Status);
+      document.getElementById('modal-product-form-title').textContent = 'Edit Data Bibit';
+    };
+
+    window.handleSaveProduct = function(event) {
+      event.preventDefault();
+      const pId = document.getElementById('adm-prod-id').value;
+      const payload = {
+        Produk_ID: pId || ('PRD-' + new Date().getTime()),
+        Kategori_ID: document.getElementById('adm-prod-category').value,
+        Nama_Produk: document.getElementById('adm-prod-name').value,
+        Harga: Number(document.getElementById('adm-prod-price').value),
+        Stok: Number(document.getElementById('adm-prod-stock').value),
+        Foto_URL: document.getElementById('adm-prod-photo').value,
+        Deskripsi: document.getElementById('adm-prod-desc').value,
+        Status: document.getElementById('adm-prod-status').value === 'true'
+      };
+
+      if (pId) {
+        const idx = window.appState.products.findIndex(p => p.Produk_ID === pId);
+        if (idx !== -1) window.appState.products[idx] = payload;
+      } else {
+        window.appState.products.unshift(payload);
+      }
+
+      window.saveMockDatabase();
+      window.closeProductFormModal();
+      window.renderAdminProducts();
+      window.showToast('Data bibit berhasil disimpan.', 'success');
+
+      if (window.isGAS) {
+        google.script.run.saveProduct(window.appState.authToken, payload);
+      }
+    };
+
+    window.handleToggleProductStatus = function(pId) {
+      const p = window.appState.products.find(item => item.Produk_ID === pId);
+      if (!p) return;
+      p.Status = !p.Status;
+      window.saveMockDatabase();
+      window.renderAdminProducts();
+      window.showToast('Status bibit diperbarui menjadi ' + (p.Status ? 'Aktif' : 'Nonaktif'));
+
+      if (window.isGAS) {
+        google.script.run.saveProduct(window.appState.authToken, p);
+      }
+    };
+
+    // 19. KELOLA KATEGORI (ADMIN)
+    window.renderAdminCategories = function() {
+      const tbody = document.getElementById('admin-category-table-body');
+      if (!tbody) return;
+
+      tbody.innerHTML = window.appState.categories.map(c => {
+        return '<tr class="hover:bg-slate-50 transition-colors">' +
+          '<td class="p-3.5 font-mono text-xs text-slate-400">' + c.Kategori_ID + '</td>' +
+          '<td class="p-3.5 font-bold text-slate-800 text-xs">' + c.Nama_Kategori + '</td>' +
+          '<td class="p-3.5 text-xs text-slate-500">' + (c.Deskripsi || '-') + '</td>' +
+          '<td class="p-3.5 text-right space-x-1">' +
+            '<button onclick="window.editCategory(\'' + c.Kategori_ID + '\')" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg">Edit</button>' +
+            '<button onclick="window.handleDeleteCategory(\'' + c.Kategori_ID + '\')" class="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold rounded-lg">Hapus</button>' +
+          '</td>' +
+        '</tr>';
+      }).join('');
+    };
+
+    window.openCategoryModal = function() {
+      document.getElementById('form-admin-category').reset();
+      document.getElementById('adm-cat-id').value = '';
+      document.getElementById('modal-category-form-title').textContent = 'Tambah Kategori';
+      document.getElementById('modal-category-form').classList.remove('hidden');
+    };
+
+    window.closeCategoryModal = function() {
+      document.getElementById('modal-category-form').classList.add('hidden');
+    };
+
+    window.editCategory = function(catId) {
+      const c = window.appState.categories.find(item => item.Kategori_ID === catId);
+      if (!c) return;
+      document.getElementById('adm-cat-id').value = c.Kategori_ID;
+      document.getElementById('adm-cat-name').value = c.Nama_Kategori;
+      document.getElementById('adm-cat-desc').value = c.Deskripsi || '';
+      document.getElementById('modal-category-form-title').textContent = 'Edit Kategori';
+      document.getElementById('modal-category-form').classList.remove('hidden');
+    };
+
+    window.handleSaveCategory = function(event) {
+      event.preventDefault();
+      const catId = document.getElementById('adm-cat-id').value;
+      const payload = {
+        Kategori_ID: catId || ('CAT-' + new Date().getTime()),
+        Nama_Kategori: document.getElementById('adm-cat-name').value,
+        Deskripsi: document.getElementById('adm-cat-desc').value
+      };
+
+      if (catId) {
+        const idx = window.appState.categories.findIndex(c => c.Kategori_ID === catId);
+        if (idx !== -1) window.appState.categories[idx] = payload;
+      } else {
+        window.appState.categories.push(payload);
+      }
+
+      window.saveMockDatabase();
+      window.closeCategoryModal();
+      window.renderAdminCategories();
+      window.showToast('Kategori berhasil disimpan.', 'success');
+
+      if (window.isGAS) {
+        google.script.run.saveCategory(window.appState.authToken, payload);
+      }
+    };
+
+    window.handleDeleteCategory = function(catId) {
+      // Validasi apakah kategori dipakai produk
+      const used = window.appState.products.some(p => p.Kategori_ID === catId);
+      if (used) {
+        window.showToast('Kategori ini masih digunakan oleh produk aktif dan tidak dapat dihapus.', 'error');
+        return;
+      }
+      if (!confirm('Hapus kategori ini?')) return;
+
+      window.appState.categories = window.appState.categories.filter(c => c.Kategori_ID !== catId);
+      window.saveMockDatabase();
+      window.renderAdminCategories();
+      window.showToast('Kategori dihapus.');
+
+      if (window.isGAS) {
+        google.script.run.deleteCategory(window.appState.authToken, catId);
+      }
+    };
+
+    // 20. KELOLA PESANAN (ADMIN)
+    window.renderAdminOrders = function() {
+      const statusFilter = document.getElementById('admin-order-filter-status').value;
+      const tbody = document.getElementById('admin-orders-table-body');
+      if (!tbody) return;
+
+      const filtered = window.appState.orders.filter(o => statusFilter === 'ALL' || o.Status === statusFilter);
+
+      const statusBadges = {
+        'Menunggu Pembayaran': 'bg-amber-100 text-amber-800 border-amber-200',
+        'Dibayar': 'bg-blue-100 text-blue-800 border-blue-200',
+        'Diproses': 'bg-indigo-100 text-indigo-800 border-indigo-200',
+        'Dikirim': 'bg-sky-100 text-sky-800 border-sky-200',
+        'Selesai': 'bg-emerald-100 text-emerald-800 border-emerald-200',
+        'Dibatalkan': 'bg-rose-100 text-rose-800 border-rose-200'
+      };
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-xs text-slate-400">Tidak ada pesanan dengan filter status ini.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(o => {
+        const user = window.appState.users.find(u => u.User_ID === o.User_ID);
+        const userName = user ? user.Nama_Lengkap : 'Pelanggan';
+        const userPhone = user ? (user.No_HP || '') : '';
+        const waLink = userPhone ? 'https://wa.me/' + userPhone.replace(/[^0-9]/g, '') + '?text=' + encodeURIComponent('Halo ' + userName + ', kami dari Admin Bibitunggul.id mengenai pesanan #' + o.No_Pesanan + '.') : '#';
+
+        // Action button generator
+        let quickAction = '';
+        if (o.Status === 'Menunggu Pembayaran') {
+          quickAction = '<button onclick="window.handleAdminStatusChange(\'' + o.Pesanan_ID + '\', \'Dibayar\')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs flex items-center gap-1 transition-all" title="Klik setelah mutasi transfer rekening dicek">' +
+            '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Konfirmasi Lunas' +
+          '</button>';
+        } else if (o.Status === 'Dibayar') {
+          quickAction = '<button onclick="window.handleAdminStatusChange(\'' + o.Pesanan_ID + '\', \'Diproses\')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-xs flex items-center gap-1 transition-all" title="Mulai packing bibit tanaman">' +
+            '📦 Proses Bibit' +
+          '</button>';
+        } else if (o.Status === 'Diproses') {
+          quickAction = '<button onclick="window.handleAdminStatusChange(\'' + o.Pesanan_ID + '\', \'Dikirim\')" class="px-3 py-1.5 bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs rounded-xl shadow-xs flex items-center gap-1 transition-all" title="Serahkan ke kurir/ekspedisi">' +
+            '🚚 Kirim Pesanan' +
+          '</button>';
+        } else if (o.Status === 'Dikirim') {
+          quickAction = '<button onclick="window.handleAdminStatusChange(\'' + o.Pesanan_ID + '\', \'Selesai\')" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-xl shadow-xs flex items-center gap-1 transition-all" title="Bibit telah sampai di pembeli">' +
+            '🏁 Tandai Selesai' +
+          '</button>';
+        }
+
+        return '<tr class="hover:bg-slate-50 transition-colors">' +
+          '<td class="p-3.5 font-mono text-xs font-bold text-slate-900">' +
+            o.No_Pesanan +
+            '<span class="block text-[10px] text-slate-400 font-sans font-normal">' + o.Tanggal + '</span>' +
+          '</td>' +
+          '<td class="p-3.5 text-xs text-slate-700">' +
+            '<span class="font-bold block text-slate-800">' + userName + '</span>' +
+            (userPhone ? '<a href="' + waLink + '" target="_blank" class="text-[11px] text-emerald-600 hover:underline flex items-center gap-1 mt-0.5"><svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654z"/></svg> ' + userPhone + '</a>' : '') +
+          '</td>' +
+          '<td class="p-3.5 text-xs font-bold text-brand-700">' + window.formatRupiah(o.Total) + '</td>' +
+          '<td class="p-3.5"><span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase ' + (o.Metode_Bayar === 'transfer' ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800') + '">' + o.Metode_Bayar + '</span></td>' +
+          '<td class="p-3.5"><span class="px-2.5 py-1 rounded-full text-[11px] font-bold border ' + (statusBadges[o.Status] || 'bg-slate-100 text-slate-700') + '">' + o.Status + '</span></td>' +
+          '<td class="p-3.5 flex items-center gap-2 flex-wrap">' +
+            quickAction +
+            '<select onchange="window.handleAdminStatusChange(\'' + o.Pesanan_ID + '\', this.value)" class="bg-slate-100 border border-slate-200 rounded-lg px-2 py-1 text-xs font-semibold text-slate-700">' +
+              ['Menunggu Pembayaran', 'Dibayar', 'Diproses', 'Dikirim', 'Selesai', 'Dibatalkan'].map(st => {
+                return '<option value="' + st + '" ' + (o.Status === st ? 'selected' : '') + '>' + st + '</option>';
+              }).join('') +
+            '</select>' +
+          '</td>' +
+        '</tr>';
+      }).join('');
+    };
+
+    // 20.1 PAYMENT INSTRUCTION UTILITIES
+    window.openPaymentInstructionsModal = function(orderNo, total) {
+      window.appState.pendingTransferOrder = { orderNo: orderNo, total: total };
+      const elNo = document.getElementById('instruction-order-no');
+      const elTot = document.getElementById('instruction-order-total');
+      if (elNo) elNo.textContent = orderNo;
+      if (elTot) elTot.textContent = window.formatRupiah(total);
+      const modal = document.getElementById('modal-payment-instructions');
+      if (modal) modal.classList.remove('hidden');
+    };
+
+    window.closePaymentInstructionsModal = function() {
+      const modal = document.getElementById('modal-payment-instructions');
+      if (modal) modal.classList.add('hidden');
+    };
+
+    window.copyToClipboard = function(text, label) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function() {
+          window.showToast(label + ' berhasil disalin!', 'success');
+        }).catch(function() {
+          window.showToast(label + ': ' + text);
+        });
+      } else {
+        window.showToast(label + ': ' + text);
+      }
+    };
+
+    window.sendWhatsAppConfirmation = function() {
+      const order = window.appState.pendingTransferOrder;
+      const orderNo = order ? order.orderNo : 'ORD-TERBARU';
+      const totalStr = order ? window.formatRupiah(order.total) : '';
+      const u = window.appState.currentUser;
+      const userName = u ? u.Nama_Lengkap : 'Pelanggan';
+
+      const msg = 'Halo Admin Bibitunggul.id, saya ingin konfirmasi pembayaran transfer untuk pesanan ' + orderNo + ' sejumlah ' + totalStr + ' atas nama ' + userName + ' (Rekening Tujuan: Mandiri 1710015583571 a.n MOCH TANSYA AHSAN WA). Bukti transfer telah saya lampirkan.';
+      window.open('https://wa.me/628813559211?text=' + encodeURIComponent(msg), '_blank');
+      window.closePaymentInstructionsModal();
+    };
+
+    window.handleAdminStatusChange = function(orderId, newStatus) {
+      if (newStatus === 'Dibatalkan') {
+        window.handleCancelOrder(orderId);
+        return;
+      }
+
+      const o = window.appState.orders.find(item => item.Pesanan_ID === orderId);
+      if (o) {
+        o.Status = newStatus;
+        window.saveMockDatabase();
+        window.showToast('Status pesanan #' + o.No_Pesanan + ' diubah menjadi ' + newStatus, 'success');
+        window.renderAdminOrders();
+
+        if (window.isGAS) {
+          google.script.run.updateOrderStatus(window.appState.authToken, orderId, newStatus);
+        }
+      }
+    };
+
+    // 21. DAFTAR PENGGUNA (ADMIN)
+    window.renderAdminUsers = function() {
+      const tbody = document.getElementById('admin-users-table-body');
+      if (!tbody) return;
+
+      tbody.innerHTML = window.appState.users.map(u => {
+        const isActive = u.Status === true || u.Status === 'true';
+        return '<tr class="hover:bg-slate-50 transition-colors">' +
+          '<td class="p-3.5 font-mono text-xs text-slate-400">' + u.User_ID + '</td>' +
+          '<td class="p-3.5 text-xs font-bold text-slate-800">' + u.Nama_Lengkap + '<span class="block text-[10px] text-slate-400 font-normal">@' + u.Username + '</span></td>' +
+          '<td class="p-3.5 text-xs text-slate-600">' + u.Email + '<span class="block text-[10px] text-slate-400">' + u.No_HP + '</span></td>' +
+          '<td class="p-3.5 text-xs font-bold ' + (u.Role === 'Admin' ? 'text-brand-700' : 'text-slate-600') + '">' + u.Role + '</td>' +
+          '<td class="p-3.5"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ' + (isActive ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800') + '">' + (isActive ? 'Aktif' : 'Nonaktif') + '</span></td>' +
+          '<td class="p-3.5 text-right">' +
+            (u.Role === 'Admin' ? '<span class="text-[11px] text-slate-400 italic">Super Admin</span>' : '<button onclick="window.handleToggleUserStatus(\'' + u.User_ID + '\')" class="px-2.5 py-1 ' + (isActive ? 'bg-rose-50 text-rose-700 hover:bg-rose-100' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100') + ' text-xs font-bold rounded-lg">' + (isActive ? 'Nonaktifkan' : 'Aktifkan') + '</button>') +
+          '</td>' +
+        '</tr>';
+      }).join('');
+    };
+
+    window.handleToggleUserStatus = function(targetUserId) {
+      const u = window.appState.users.find(item => item.User_ID === targetUserId);
+      if (!u) return;
+      u.Status = !u.Status;
+      window.saveMockDatabase();
+      window.renderAdminUsers();
+      window.showToast('Status pengguna ' + u.Nama_Lengkap + ' diubah.');
+
+      if (window.isGAS) {
+        google.script.run.toggleUserStatus(window.appState.authToken, targetUserId);
+      }
+    };
+
+    // 22. LAPORAN PENJUALAN (ADMIN)
+    window.renderAdminReports = function() {
+      const completed = window.appState.orders.filter(o => o.Status === 'Selesai');
+      const completedIds = completed.map(o => o.Pesanan_ID);
+      const details = window.appState.orderDetails.filter(d => completedIds.includes(d.Pesanan_ID));
+
+      // Group Top Selling Products
+      const prodMap = {};
+      details.forEach(d => {
+        if (!prodMap[d.Produk_ID]) {
+          prodMap[d.Produk_ID] = { name: d.Nama_Produk, qty: 0, revenue: 0 };
+        }
+        prodMap[d.Produk_ID].qty += Number(d.Jumlah);
+        prodMap[d.Produk_ID].revenue += Number(d.Subtotal);
+      });
+
+      const topList = document.getElementById('admin-top-selling-products');
+      if (topList) {
+        const sorted = Object.values(prodMap).sort((a, b) => b.qty - a.qty);
+        if (sorted.length === 0) {
+          topList.innerHTML = '<p class="text-xs text-slate-400">Belum ada transaksi selesai.</p>';
+        } else {
+          topList.innerHTML = sorted.map(item => {
+            return '<div class="flex items-center justify-between p-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs">' +
+              '<div>' +
+                '<h5 class="font-bold text-slate-800">' + item.name + '</h5>' +
+                '<span class="text-slate-500">' + item.qty + ' bibit terjual</span>' +
+              '</div>' +
+              '<span class="font-extrabold text-brand-700">' + window.formatRupiah(item.revenue) + '</span>' +
+            '</div>';
+          }).join('');
+        }
+      }
+
+      // Payment breakdown
+      const payList = document.getElementById('admin-payment-methods-breakdown');
+      if (payList) {
+        const transferCount = completed.filter(o => o.Metode_Bayar === 'transfer').length;
+        const codCount = completed.filter(o => o.Metode_Bayar === 'bayar di tempat').length;
+
+        payList.innerHTML = '<div class="space-y-2 text-xs">' +
+          '<div class="flex justify-between p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold">' +
+            '<span>Transfer Bank</span><span>' + transferCount + ' Transaksi</span>' +
+          '</div>' +
+          '<div class="flex justify-between p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold">' +
+            '<span>Bayar di Tempat (COD)</span><span>' + codCount + ' Transaksi</span>' +
+          '</div>' +
+        '</div>';
+      }
+    };
+
+    window.exportReportExcel = function() {
+      const completed = window.appState.orders.filter(o => o.Status === 'Selesai');
+      let csv = 'No Pesanan,Tanggal,User ID,Total,Metode Bayar\n';
+      completed.forEach(o => {
+        csv += '"' + o.No_Pesanan + '","' + o.Tanggal + '","' + o.User_ID + '",' + o.Total + ',"' + o.Metode_Bayar + '"\n';
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'Laporan_Penjualan_Bibitunggul_' + new Date().toISOString().substring(0, 10) + '.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.showToast('Laporan penjualan CSV berhasil diunduh.', 'success');
+    };
+
+    window.printReport = function() {
+      window.print();
+    };
+
+    // 23. RUNTIME BOOTSTRAP
+    document.addEventListener('DOMContentLoaded', function() {
+      window.initApplication();
+    });
+  </script>
+</body>
+</html>
